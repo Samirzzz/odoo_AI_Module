@@ -1,0 +1,102 @@
+2025-03-28 19:14:43,956 54332 INFO ? odoo: Odoo version 18.0-20250328 
+2025-03-28 19:14:43,956 54332 INFO ? odoo: Using configuration file at E:\oodo18.v2\server\odoo.conf 
+2025-03-28 19:14:43,956 54332 INFO ? odoo: addons paths: ['E:\\oodo18.v2\\server\\odoo\\addons', 'e:\\oodo18.v2\\sessions\\addons\\18.0', 'e:\\oodo18.v2\\server\\odoo\\addons'] 
+2025-03-28 19:14:43,957 54332 INFO ? odoo: database: openpg@localhost:5432 
+2025-03-28 19:14:46,522 54332 INFO ? odoo.addons.base.models.ir_actions_report: Will use the Wkhtmltopdf binary at wkhtmltopdf.exe 
+2025-03-28 19:14:46,554 54332 INFO ? odoo.addons.base.models.ir_actions_report: You need Wkhtmltoimage to generate images from html. 
+2025-03-28 19:14:48,050 54332 WARNING ? py.warnings: E:\oodo18.v2\python\Lib\site-packages\vobject\base.py:736: SyntaxWarning: invalid escape sequence '\-'
+  File "E:\oodo18.v2\server\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "E:\oodo18.v2\server\odoo\cli\command.py", line 66, in main
+    o.run(args)
+  File "E:\oodo18.v2\server\odoo\cli\server.py", line 180, in run
+    main(args)
+  File "E:\oodo18.v2\server\odoo\cli\server.py", line 173, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "E:\oodo18.v2\server\odoo\service\server.py", line 1368, in start
+    load_server_wide_modules()
+  File "E:\oodo18.v2\server\odoo\service\server.py", line 1267, in load_server_wide_modules
+    odoo.modules.module.load_openerp_module(m)
+  File "E:\oodo18.v2\server\odoo\modules\module.py", line 384, in load_openerp_module
+    __import__(qualname)
+  File "E:\oodo18.v2\server\odoo\addons\web\__init__.py", line 5, in <module>
+    from . import models
+  File "E:\oodo18.v2\server\odoo\addons\web\models\__init__.py", line 12, in <module>
+    from . import res_partner
+  File "E:\oodo18.v2\server\odoo\addons\web\models\res_partner.py", line 12, in <module>
+    import vobject
+  File "E:\oodo18.v2\python\Lib\site-packages\vobject\__init__.py", line 79, in <module>
+    from .base import newFromBehavior, readOne, readComponents
+  File "E:\oodo18.v2\python\Lib\warnings.py", line 110, in _showwarnmsg
+    sw(msg.message, msg.category, msg.filename, msg.lineno,
+  File "E:\oodo18.v2\server\odoo\netsvc.py", line 345, in showwarning_with_traceback
+    for frame in traceback.extract_stack():
+ 
+2025-03-28 19:14:48,065 54332 WARNING ? py.warnings: E:\oodo18.v2\python\Lib\site-packages\vobject\base.py:1219: SyntaxWarning: invalid escape sequence '\;'
+  File "E:\oodo18.v2\server\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "E:\oodo18.v2\server\odoo\cli\command.py", line 66, in main
+    o.run(args)
+  File "E:\oodo18.v2\server\odoo\cli\server.py", line 180, in run
+    main(args)
+  File "E:\oodo18.v2\server\odoo\cli\server.py", line 173, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "E:\oodo18.v2\server\odoo\service\server.py", line 1368, in start
+    load_server_wide_modules()
+  File "E:\oodo18.v2\server\odoo\service\server.py", line 1267, in load_server_wide_modules
+    odoo.modules.module.load_openerp_module(m)
+  File "E:\oodo18.v2\server\odoo\modules\module.py", line 384, in load_openerp_module
+    __import__(qualname)
+  File "E:\oodo18.v2\server\odoo\addons\web\__init__.py", line 5, in <module>
+    from . import models
+  File "E:\oodo18.v2\server\odoo\addons\web\models\__init__.py", line 12, in <module>
+    from . import res_partner
+  File "E:\oodo18.v2\server\odoo\addons\web\models\res_partner.py", line 12, in <module>
+    import vobject
+  File "E:\oodo18.v2\python\Lib\site-packages\vobject\__init__.py", line 79, in <module>
+    from .base import newFromBehavior, readOne, readComponents
+  File "E:\oodo18.v2\python\Lib\warnings.py", line 110, in _showwarnmsg
+    sw(msg.message, msg.category, msg.filename, msg.lineno,
+  File "E:\oodo18.v2\server\odoo\netsvc.py", line 345, in showwarning_with_traceback
+    for frame in traceback.extract_stack():
+ 
+2025-03-28 19:14:48,066 54332 WARNING ? py.warnings: E:\oodo18.v2\python\Lib\site-packages\vobject\base.py:1219: SyntaxWarning: invalid escape sequence '\,'
+  File "E:\oodo18.v2\server\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "E:\oodo18.v2\server\odoo\cli\command.py", line 66, in main
+    o.run(args)
+  File "E:\oodo18.v2\server\odoo\cli\server.py", line 180, in run
+    main(args)
+  File "E:\oodo18.v2\server\odoo\cli\server.py", line 173, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "E:\oodo18.v2\server\odoo\service\server.py", line 1368, in start
+    load_server_wide_modules()
+  File "E:\oodo18.v2\server\odoo\service\server.py", line 1267, in load_server_wide_modules
+    odoo.modules.module.load_openerp_module(m)
+  File "E:\oodo18.v2\server\odoo\modules\module.py", line 384, in load_openerp_module
+    __import__(qualname)
+  File "E:\oodo18.v2\server\odoo\addons\web\__init__.py", line 5, in <module>
+    from . import models
+  File "E:\oodo18.v2\server\odoo\addons\web\models\__init__.py", line 12, in <module>
+    from . import res_partner
+  File "E:\oodo18.v2\server\odoo\addons\web\models\res_partner.py", line 12, in <module>
+    import vobject
+  File "E:\oodo18.v2\python\Lib\site-packages\vobject\__init__.py", line 79, in <module>
+    from .base import newFromBehavior, readOne, readComponents
+  File "E:\oodo18.v2\python\Lib\warnings.py", line 110, in _showwarnmsg
+    sw(msg.message, msg.category, msg.filename, msg.lineno,
+  File "E:\oodo18.v2\server\odoo\netsvc.py", line 345, in showwarning_with_traceback
+    for frame in traceback.extract_stack():
+ 
+2025-03-28 19:14:48,172 54332 INFO ? odoo.service.server: Initiating shutdown 
+2025-03-28 19:14:48,172 54332 INFO ? odoo.service.server: Hit CTRL-C again or send a second signal to force the shutdown. 
+2025-03-28 23:09:38,894 95732 INFO ? odoo: Odoo version 18.0-20250328 
+2025-03-28 23:09:38,894 95732 INFO ? odoo: Using configuration file at E:\oodo18.v2\server\odoo.conf 
+2025-03-28 23:09:38,894 95732 INFO ? odoo: addons paths: ['E:\\oodo18.v2\\server\\odoo\\addons', 'e:\\oodo18.v2\\sessions\\addons\\18.0', 'e:\\oodo18.v2\\server\\odoo\\addons'] 
+2025-03-28 23:09:38,894 95732 INFO ? odoo: database: openpg@localhost:5432 
+2025-03-28 23:09:38,935 95732 INFO ? odoo.sql_db: Connection to the database failed 
+2025-03-28 23:10:02,327 6000 INFO ? odoo: Odoo version 18.0-20250328 
+2025-03-28 23:10:02,327 6000 INFO ? odoo: Using configuration file at E:\oodo18.v2\server\odoo.conf 
+2025-03-28 23:10:02,327 6000 INFO ? odoo: addons paths: ['E:\\oodo18.v2\\server\\odoo\\addons', 'e:\\oodo18.v2\\sessions\\addons\\18.0', 'e:\\oodo18.v2\\server\\odoo\\addons'] 
+2025-03-28 23:10:02,327 6000 INFO ? odoo: database: openpg@localhost:5432 
+2025-03-28 23:10:02,366 6000 INFO ? odoo.sql_db: Connection to the database failed 

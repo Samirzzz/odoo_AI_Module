@@ -1,0 +1,37 @@
+<odoo>
+    <!-- Feedback Views -->
+    <record id="action_real_estate_feedback" model="ir.actions.act_window">
+        <field name="name">Feedback</field>
+        <field name="res_model">real.estate.feedback</field>
+        <!-- Change view_mode from "tree,form" to "list,form" -->
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Updated list view: changed from <tree> to <list> -->
+    <record id="view_real_estate_feedback_list" model="ir.ui.view">
+        <field name="name">real.estate.feedback.list</field>
+        <field name="model">real.estate.feedback</field>
+        <field name="arch" type="xml">
+            <list string="Feedback">
+                <field name="lead_id"/>
+                <field name="feedback_text"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Feedback form view remains unchanged -->
+    <record id="view_real_estate_feedback_form" model="ir.ui.view">
+        <field name="name">real.estate.feedback.form</field>
+        <field name="model">real.estate.feedback</field>
+        <field name="arch" type="xml">
+            <form string="Feedback">
+                <sheet>
+                    <group>
+                        <field name="lead_id"/>
+                        <field name="feedback_text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
