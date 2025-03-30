@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Action Window for Users -->
+  <record id="action_users" model="ir.actions.act_window">
+    <field name="name">Users</field>
+    <field name="res_model">users.users</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- List View for Users -->
+  <record id="view_users_list" model="ir.ui.view">
+    <field name="name">users.users.list</field>
+    <field name="model">users.users</field>
+    <field name="arch" type="xml">
+      <list string="Users">
+        <field name="name"/>
+        <field name="email"/>
+        <field name="country"/>
+        <field name="role"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View for Users -->
+  <record id="view_users_form" model="ir.ui.view">
+    <field name="name">users.users.form</field>
+    <field name="model">users.users</field>
+    <field name="arch" type="xml">
+      <form string="User">
+        <header>
+          <!-- You can define a button that calls a method on the backend -->
+          <button name="fetch_supabase_users" type="object" string="Fetch from Supabase" class="oe_highlight"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="firstname"/>
+              <field name="lastname"/>
+              <field name="email"/>
+              <field name="phone"/>
+            </group>
+            <group>
+              <field name="country"/>
+              <field name="dob"/>
+              <field name="job"/>
+              <field name="role"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Additional Info">
+              <group>
+                <field name="total_time_spent"/>
+                <field name="created_at"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Backend Menu for Users -->
+  <menuitem id="menu_users_root" name="Users Management" sequence="10"/>
+  <menuitem id="menu_users" name="Users" parent="menu_users_root" action="action_users" sequence="1"/>
+</odoo>

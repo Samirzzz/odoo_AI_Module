@@ -3,3 +3,4 @@ access_real_estate_lead,access.real.estate.lead,model_real_estate_lead,base.grou
 access_real_estate_feedback,access.real.estate.feedback,model_real_estate_feedback,,1,1,1,1
 access_real_estate_property,access.real.estate.property,model_real_estate_property,,1,1,1,1
 access_property_recommendation,access.property.recommendation,model_property_recommendation,,1,1,1,1
+access_users,access.users,model_users_users,base.group_user,1,1,1,1

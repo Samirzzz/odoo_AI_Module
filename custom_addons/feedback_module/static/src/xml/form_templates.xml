@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="feedback_module.UsersFormView" owl="1">
+        <div class="o_form_view">
+            <div class="o_form_statusbar">
+                <div class="o_statusbar_buttons">
+                    <button class="btn btn-primary" t-on-click="onClickFetchUsers">
+                        <i class="fa fa-refresh"/> Fetch from Supabase
+                    </button>
+                </div>
+            </div>
+            <div class="o_form_sheet">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_save" type="object" class="oe_stat_button" icon="fa-save" string="Save"/>
+                </div>
+                <div class="oe_title">
+                    <h1><field name="name" readonly="1"/></h1>
+                </div>
+                <div class="o_notebook">
+                    <div class="o_notebook_headers">
+                        <div class="o_notebook_header" data-tab="0">Basic Information</div>
+                        <div class="o_notebook_header" data-tab="1">Additional Info</div>
+                    </div>
+                    <div class="o_notebook_pages">
+                        <div class="o_notebook_page" data-tab="0">
+                            <div class="o_group">
+                                <div class="o_group_col_6">
+                                    <div class="o_row">
+                                        <label for="firstname" class="o_required"/>
+                                        <field name="firstname"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="lastname" class="o_required"/>
+                                        <field name="lastname"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="email"/>
+                                        <field name="email"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="phone"/>
+                                        <field name="phone"/>
+                                    </div>
+                                </div>
+                                <div class="o_group_col_6">
+                                    <div class="o_row">
+                                        <label for="country"/>
+                                        <field name="country"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="dob"/>
+                                        <field name="dob"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="job"/>
+                                        <field name="job"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="role"/>
+                                        <field name="role"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_notebook_page" data-tab="1">
+                            <div class="o_group">
+                                <div class="o_group_col_6">
+                                    <div class="o_row">
+                                        <label for="total_time_spent"/>
+                                        <field name="total_time_spent"/>
+                                    </div>
+                                    <div class="o_row">
+                                        <label for="created_at"/>
+                                        <field name="created_at"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates> 
