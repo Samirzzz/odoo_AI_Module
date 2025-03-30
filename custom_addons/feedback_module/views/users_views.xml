@@ -13,10 +13,13 @@
     <field name="model">users.users</field>
     <field name="arch" type="xml">
       <list string="Users">
-        <field name="name"/>
+        <field name="firstname"/>
+        <field name="lastname"/>
         <field name="email"/>
+        <field name="phone"/>
         <field name="country"/>
-        <field name="role"/>
+        <field name="job"/>
+        <field name="total_time_spent"/>
       </list>
     </field>
   </record>

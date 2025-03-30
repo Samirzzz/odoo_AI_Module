@@ -72,22 +72,27 @@ class Users(models.Model):
                 existing = self.search([('idd', '=', str(user_data.get('id')))], limit=1)
                 vals = {
                     'created_at': self._parse_datetime(user_data.get('created_at')),
-                    'country': user_data.get('country'),
-                    'dob': user_data.get('dob'),
-                    'job': user_data.get('job'),
-                    'firstname': user_data.get('firstname'),
-                    'lastname': user_data.get('lastname'),
-                    'email': user_data.get('email'),
-                    'phone': user_data.get('phone'),
+                    'country': user_data.get('country') or 'Unknown',
+                    'dob': user_data.get('dob') or '',
+                    'job': user_data.get('job') or 'Unknown',
+                    'firstname': user_data.get('firstname') or '',
+                    'lastname': user_data.get('lastname') or '',
+                    'email': user_data.get('email') or '',
+                    'phone': user_data.get('phone') or '',
                     'role': user_data.get('role'),
-                    'total_time_spent': user_data.get('total_time_spent'),
+                    'total_time_spent': user_data.get('total_time_spent') or 0,
                     'idd': str(user_data.get('id')),
                 }
                 if existing:
                     existing.write(vals)
                 else:
                     self.create(vals)
-            return {'success': True, 'users': users_data}
+
+            # Return success with the updated records
+            return {
+                'success': True,
+                'users': self.search_read([], ['firstname', 'lastname', 'email', 'phone', 'country', 'job', 'total_time_spent'])
+            }
             
         except Exception as e:
             _logger.error("Exception when fetching Supabase users: %s", str(e))

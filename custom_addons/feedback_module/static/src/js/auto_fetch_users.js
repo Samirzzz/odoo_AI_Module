@@ -4,11 +4,13 @@ import { FormController } from "@web/views/form/form_controller";
 import { FormView } from "@web/views/form/form_view";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+import { listView } from "@web/views/list/list_view";
 
 export class UsersFormController extends FormController {
     setup() {
         super.setup();
         this.orm = useService("orm");
+        this.action = useService("action");
         this.notification = useService("notification");
     }
 
@@ -16,19 +18,34 @@ export class UsersFormController extends FormController {
         ev.preventDefault();
         try {
             const result = await this.orm.call(
-                "users.users",
-                "fetch_supabase_users",
+                'users.users',
+                'fetch_supabase_users',
                 [],
                 {}
             );
-            this.notification.add("Fetched Supabase users", {
-                type: "success",
-                sticky: false,
-            });
-            window.location.reload();
+            
+            if (result.success) {
+                this.notification.add('Success', {
+                    type: 'success',
+                    sticky: false,
+                });
+                // Update the list view without page refresh
+                this.action.doAction({
+                    type: 'ir.actions.act_window',
+                    res_model: 'users.users',
+                    view_mode: 'list,form',
+                    target: 'current',
+                    context: {},
+                });
+            } else {
+                this.notification.add(result.error || 'Error', {
+                    type: 'danger',
+                    sticky: false,
+                });
+            }
         } catch (error) {
-            this.notification.add("Error fetching Supabase users", {
-                type: "danger",
+            this.notification.add('Error', {
+                type: 'danger',
                 sticky: false,
             });
             console.error("Error fetching Supabase users:", error);
