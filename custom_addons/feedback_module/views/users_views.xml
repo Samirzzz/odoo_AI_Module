@@ -31,8 +31,9 @@
     <field name="arch" type="xml">
       <form string="User">
         <header>
-          <!-- You can define a button that calls a method on the backend -->
-          <button name="fetch_supabase_users" type="object" string="Fetch from Supabase" class="oe_highlight"/>
+          <!-- Button to trigger bulk feedback insertion -->
+          <button name="action_insert_feedbacks" type="object" string="Insert Feedbacks" class="oe_highlight"/>
+          <!-- Removed the fetch_supabase_users button -->
         </header>
         <sheet>
           <group>
@@ -53,8 +54,16 @@
             <page string="Additional Info">
               <group>
                 <field name="total_time_spent"/>
-                <field name="created_at"/>
               </group>
+            </page>
+            <page string="Feedbacks">
+              <field name="feedback_ids">
+                <list>
+                  <field name="id"/>
+                  <field name="created_at"/>
+                  <field name="feedback"/>
+                </list>
+              </field>
             </page>
           </notebook>
         </sheet>

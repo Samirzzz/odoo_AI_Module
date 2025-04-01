@@ -1,37 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Feedback Views -->
-    <record id="action_real_estate_feedback" model="ir.actions.act_window">
-        <field name="name">Feedback</field>
-        <field name="res_model">real.estate.feedback</field>
-        <!-- Change view_mode from "tree,form" to "list,form" -->
-        <field name="view_mode">list,form</field>
-    </record>
+  <!-- Action Window for Feedbacks -->
+  <record id="action_feedback" model="ir.actions.act_window">
+    <field name="name">Feedbacks</field>
+    <field name="res_model">real.estate.feedback</field>
+    <field name="view_mode">list,form</field>
+    <field name="target">current</field>
+  </record>
 
-    <!-- Updated list view: changed from <tree> to <list> -->
-    <record id="view_real_estate_feedback_list" model="ir.ui.view">
-        <field name="name">real.estate.feedback.list</field>
-        <field name="model">real.estate.feedback</field>
-        <field name="arch" type="xml">
-            <list string="Feedback">
-                <field name="lead_id"/>
-                <field name="feedback_text"/>
-            </list>
-        </field>
-    </record>
+  <!-- List View for Feedbacks -->
+  <record id="view_feedback_list" model="ir.ui.view">
+    <field name="name">real.estate.feedback.list</field>
+    <field name="model">real.estate.feedback</field>
+    <field name="arch" type="xml">
+      <list string="Feedbacks">
+        <!-- Displaying the 'id' field along with other fields -->
+        <field name="id"/>
+        <field name="feedback"/>
+        <field name="property_id"/>
+        <field name="user_id"/>
+        <field name="created_at"/>
+      </list>
+    </field>
+  </record>
 
-    <!-- Feedback form view remains unchanged -->
-    <record id="view_real_estate_feedback_form" model="ir.ui.view">
-        <field name="name">real.estate.feedback.form</field>
-        <field name="model">real.estate.feedback</field>
-        <field name="arch" type="xml">
-            <form string="Feedback">
-                <sheet>
-                    <group>
-                        <field name="lead_id"/>
-                        <field name="feedback_text"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+  <!-- Form View for Feedbacks -->
+  <record id="view_feedback_form" model="ir.ui.view">
+    <field name="name">real.estate.feedback.form</field>
+    <field name="model">real.estate.feedback</field>
+    <field name="arch" type="xml">
+      <form string="Feedback">
+        <sheet>
+          <group>
+            <group>
+              <field name="user_id"/>
+              <field name="property_id"/>
+            </group>
+            <group>
+              <field name="created_at"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Feedback Details">
+              <field name="feedback"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Backend Menu for Feedbacks -->
+  <menuitem id="menu_feedback_root" name="Feedback Management" sequence="20"/>
+  <menuitem id="menu_feedback" name="Feedbacks" parent="menu_feedback_root" action="action_feedback" sequence="1"/>
 </odoo>

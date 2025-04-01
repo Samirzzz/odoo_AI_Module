@@ -4,7 +4,7 @@ class RealEstateProperty(models.Model):
     _name = 'real.estate.property'
     _description = 'Real Estate Property'
 
-    name = fields.Char(string='Property Name')  # Removed required=True to allow auto-generation
+    name = fields.Char(string='Property Name')
     type = fields.Selection([
         ('apartment', 'Apartment'),
         ('villa', 'Villa'),
@@ -33,7 +33,8 @@ class RealEstateProperty(models.Model):
     payment_option = fields.Char(string='Payment Option')
     city = fields.Char(string='City')
     img_url = fields.Text(string='Image URL')
-    customer_id = fields.Many2one('res.partner', string='Customer', required=False)
+    # Change the field name from customer_id to user_id
+    user_id = fields.Many2one('res.partner', string='User', required=False)
     status = fields.Selection([
         ('pending', 'Pending'),
         ('available', 'Available'),

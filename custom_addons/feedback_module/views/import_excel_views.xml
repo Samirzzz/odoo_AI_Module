@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Action and Form for Importing Users -->
+  <record id="action_import_users_excel" model="ir.actions.act_window">
+    <field name="name">Import Users from Excel</field>
+    <field name="res_model">feedback.import.users.excel.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <record id="view_import_users_excel_form" model="ir.ui.view">
+    <field name="name">feedback.import.users.excel.wizard.form</field>
+    <field name="model">feedback.import.users.excel.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Import Users from Excel">
+        <group>
+          <field name="file_data" filename="file_name"/>
+        </group>
+        <footer>
+          <button string="Import" type="object" name="action_import_users" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action and Form for Importing Feedbacks -->
+  <record id="action_import_feedback_excel" model="ir.actions.act_window">
+    <field name="name">Import Feedbacks from Excel</field>
+    <field name="res_model">feedback.import.feedback.excel.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <record id="view_import_feedback_excel_form" model="ir.ui.view">
+    <field name="name">feedback.import.feedback.excel.wizard.form</field>
+    <field name="model">feedback.import.feedback.excel.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Import Feedbacks from Excel">
+        <group>
+          <field name="file_data" filename="file_name"/>
+        </group>
+        <footer>
+          <button string="Import" type="object" name="action_import_feedbacks" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>
