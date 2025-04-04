@@ -33,7 +33,6 @@
         <header>
           <!-- Button to trigger bulk feedback insertion -->
           <button name="action_insert_feedbacks" type="object" string="Insert Feedbacks" class="oe_highlight"/>
-          <!-- Removed the fetch_supabase_users button -->
         </header>
         <sheet>
           <group>

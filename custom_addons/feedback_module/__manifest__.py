@@ -24,6 +24,8 @@
         'views/users_views.xml',
         'security/ir.model.access.csv',
          "views/import_excel_views.xml",
+        'views/real_estate_recommendedproperty_views.xml',
+         
 
     ],
     
