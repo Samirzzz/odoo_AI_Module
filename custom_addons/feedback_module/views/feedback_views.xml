@@ -19,7 +19,6 @@
         <field name="feedback"/>
         <field name="property_id"/>
         <field name="user_id"/>
-        <field name="created_at"/>
       </list>
     </field>
   </record>
@@ -35,9 +34,6 @@
             <group>
               <field name="user_id"/>
               <field name="property_id"/>
-            </group>
-            <group>
-              <field name="created_at"/>
             </group>
           </group>
           <notebook>

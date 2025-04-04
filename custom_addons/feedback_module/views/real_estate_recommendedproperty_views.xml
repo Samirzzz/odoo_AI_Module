@@ -45,34 +45,7 @@
     </field>
   </record>
 
-  <!-- Inherit Users Form View to add Recommended Properties -->
-  <record id="view_users_form_inherit_recommended" model="ir.ui.view">
-    <field name="name">users.users.form.inherit.recommended</field>
-    <field name="model">users.users</field>
-    <field name="inherit_id" ref="feedback_module.view_users_form"/>
-    <field name="arch" type="xml">
-      <xpath expr="//notebook" position="inside">
-        <page string="Recommended Properties" name="recommended_properties">
-          <field name="real_estate_recommendedproperty_ids">
-            <list>
-              <field name="recommended_property_details_ids">
-                <list>
-                  <field name="property_id"/>
-                  <field name="score"/>
-                </list>
-              </field>
-            </list>
-          </field>
-        </page>
-      </xpath>
-    </field>
-  </record>
-
-  <!-- Menu Items -->
-  <menuitem id="menu_feedback_root" name="Feedback Management" sequence="20"/>
-  <menuitem id="menu_feedback" name="Feedbacks" parent="menu_feedback_root" action="action_feedback" sequence="1"/>
-  
-  <!-- Move Recommended Properties to be beside Feedback -->
+  <!-- Menu Item for Recommended Properties -->
   <menuitem id="menu_real_estate_recommendedproperty" 
             name="Recommended Properties"
             parent="menu_feedback_root"

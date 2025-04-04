@@ -59,8 +59,14 @@
               <field name="feedback_ids">
                 <list>
                   <field name="id"/>
-                  <field name="created_at"/>
                   <field name="feedback"/>
+                </list>
+              </field>
+            </page>
+            <page string="Recommended Properties">
+              <field name="real_estate_recommendedproperty_ids">
+                <list editable="bottom">
+                  <field name="recommended_property_details_ids" widget="many2many_tags"/>
                 </list>
               </field>
             </page>

@@ -2,6 +2,18 @@ import logging
 from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from dateutil.parser import parse as parse_datetime  # Ensure python-dateutil is installed
+
+def _parse_datetime(self, datetime_str):
+    """Parse ISO datetime string to a datetime object."""
+    if not datetime_str or datetime_str.strip() == '':
+        return False
+    try:
+        dt = parse_datetime(datetime_str)
+        return dt  # Return full datetime instead of dt.date()
+    except Exception as e:
+        _logger.warning(f"Could not parse datetime string: {datetime_str}, error: {e}")
+        return False
 
 _logger = logging.getLogger(__name__)
 
@@ -22,13 +34,12 @@ class Users(models.Model):
     idd = fields.Char(string='IDD')
     token = fields.Char(string='Token')
     password = fields.Char(string='Password')
-    created_at = fields.Datetime(string='Created At', default=fields.Datetime.now)
     
-    # One2many field linking to recommended properties (for the "User Recommendation" tab)
+    # One2many field linking to recommended properties
     real_estate_recommendedproperty_ids = fields.One2many(
         'real_estate_recommendedproperty',
         'user_id',
-        string='Recommendations'
+        string='Recommended Properties'
     )
 
     # One2many field linking to feedback records
@@ -40,16 +51,15 @@ class Users(models.Model):
             record.name = f"{record.firstname or ''} {record.lastname or ''}".strip()
 
     def _parse_datetime(self, datetime_str):
-        """Parse ISO datetime string to date object."""
-        if not datetime_str or datetime_str == '':
+        """Parse ISO datetime string to a datetime object."""
+        if not datetime_str or datetime_str.strip() == '':
             return False
         try:
-            dt = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
-            return dt.date()
-        except (ValueError, TypeError):
-            _logger.warning(f"Could not parse datetime string: {datetime_str}")
+            dt = parse_datetime(datetime_str)
+            return dt  # Return full datetime instead of dt.date()
+        except Exception as e:
+            _logger.warning(f"Could not parse datetime string: {datetime_str}, error: {e}")
             return False
-
     @api.model
     def create(self, vals):
         """Override create to handle the dob field properly."""
