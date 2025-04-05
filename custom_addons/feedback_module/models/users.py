@@ -20,6 +20,7 @@ _logger = logging.getLogger(__name__)
 class Users(models.Model):
     _name = 'users.users'
     _description = 'Users'
+    _rec_name = 'email'  # Use email as the display name
 
     name = fields.Char(compute='_compute_name', store=True)
     firstname = fields.Char(string='First Name', required=True)
@@ -27,8 +28,8 @@ class Users(models.Model):
     email = fields.Char(string='Email', required=True)
     phone = fields.Char(string='Phone')
     country = fields.Char(string='Country')
-    dob = fields.Date(string='Date of Birth', default=False)
     job = fields.Char(string='Job')
+    dob = fields.Date(string='Date of Birth')
     role = fields.Char(string='Role')
     total_time_spent = fields.Float(string='Total Time Spent')
     idd = fields.Char(string='IDD')
@@ -45,40 +46,41 @@ class Users(models.Model):
     # One2many field linking to feedback records
     feedback_ids = fields.One2many('real.estate.feedback', 'user_id', string='Feedbacks')
 
+    _sql_constraints = [
+        ('email_unique', 'unique(email)', 'Email must be unique!')
+    ]
+
     @api.depends('firstname', 'lastname')
     def _compute_name(self):
         for record in self:
-            record.name = f"{record.firstname or ''} {record.lastname or ''}".strip()
+            record.name = f"{record.firstname} {record.lastname}"
 
     def _parse_datetime(self, datetime_str):
-        """Parse ISO datetime string to a datetime object."""
-        if not datetime_str or datetime_str.strip() == '':
+        """Helper method to parse datetime strings"""
+        if not datetime_str:
             return False
+        
         try:
-            dt = parse_datetime(datetime_str)
-            return dt  # Return full datetime instead of dt.date()
-        except Exception as e:
+            return datetime.datetime.strptime(datetime_str, '%Y-%m-%d').date()
+        except ValueError as e:
             _logger.warning(f"Could not parse datetime string: {datetime_str}, error: {e}")
             return False
+
     @api.model
     def create(self, vals):
-        """Override create to handle the dob field properly."""
-        if 'dob' in vals:
-            dob_val = vals['dob']
-            if isinstance(dob_val, str) and dob_val.strip() == '':
-                vals['dob'] = False
-            else:
+        """Override create to handle date parsing"""
+        if vals.get('dob'):
+            dob_val = vals.get('dob')
+            if isinstance(dob_val, str):
                 parsed_date = self._parse_datetime(dob_val)
                 vals['dob'] = parsed_date if parsed_date else False
         return super(Users, self).create(vals)
 
     def write(self, vals):
-        """Override write to handle the dob field properly."""
-        if 'dob' in vals:
-            dob_val = vals['dob']
-            if isinstance(dob_val, str) and dob_val.strip() == '':
-                vals['dob'] = False
-            else:
+        """Override write to handle date parsing"""
+        if vals.get('dob'):
+            dob_val = vals.get('dob')
+            if isinstance(dob_val, str):
                 parsed_date = self._parse_datetime(dob_val)
                 vals['dob'] = parsed_date if parsed_date else False
         return super(Users, self).write(vals)
@@ -102,3 +104,43 @@ class Users(models.Model):
                     'user_id': user.id,
                 })
         return True
+
+    def import_users(self, users_data):
+        """Import users from Excel data"""
+        if not users_data:
+            return False
+
+        for user_data in users_data:
+            # Check if user already exists
+            existing_user = self.search([('email', '=', user_data.get('email'))], limit=1)
+            
+            if existing_user:
+                # Update existing user
+                existing_user.write({
+                    'firstname': user_data.get('firstname'),
+                    'lastname': user_data.get('lastname'),
+                    'phone': user_data.get('phone'),
+                    'country': user_data.get('country'),
+                    'job': user_data.get('job'),
+                    'dob': user_data.get('dob'),
+                })
+            else:
+                # Create new user
+                self.create({
+                    'firstname': user_data.get('firstname'),
+                    'lastname': user_data.get('lastname'),
+                    'email': user_data.get('email'),
+                    'phone': user_data.get('phone'),
+                    'country': user_data.get('country'),
+                    'job': user_data.get('job'),
+                    'dob': user_data.get('dob'),
+                })
+        return True
+
+    def name_get(self):
+        """Override name_get to display email as the record name"""
+        result = []
+        for user in self:
+            display_name = f"{user.email} ({user.name})" if user.name else user.email
+            result.append((user.id, display_name))
+        return result

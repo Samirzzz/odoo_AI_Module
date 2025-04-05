@@ -8,6 +8,24 @@ class RealEstateRecommendedProperty(models.Model):
     _description = 'Recommended Properties'
 
     user_id = fields.Many2one('users.users', string='User', required=True)
+    # Related fields for user information
+    user_email = fields.Char(related='user_id.email', string='Email', store=True)
+    user_phone = fields.Char(related='user_id.phone', string='Phone', store=True)
+    user_country = fields.Char(related='user_id.country', string='Country', store=True)
+    user_job = fields.Char(related='user_id.job', string='Job', store=True)
+
+    # Feedback fields
+    feedback_id = fields.Many2one('real.estate.feedback', string='Selected Feedback')
+    feedback_text = fields.Text(related='feedback_id.feedback', string='Feedback Text', readonly=True)
+    property_id = fields.Many2one(related='feedback_id.property_id', string='Property', readonly=True)
+
+    # Add a computed field to show all feedbacks for this user
+    available_feedback_ids = fields.Many2many(
+        'real.estate.feedback',
+        compute='_compute_available_feedbacks',
+        string='Available Feedbacks'
+    )
+
     recommended_property_details_ids = fields.One2many(
         'recommended.property.details',
         'recommendation_id',
@@ -38,6 +56,40 @@ class RealEstateRecommendedProperty(models.Model):
     extracted_maintenance = fields.Char(string='Extracted Maintenance', readonly=True)
     extracted_amenities = fields.Char(string='Extracted Amenities', readonly=True)
 
+    @api.depends('user_id')
+    def _compute_available_feedbacks(self):
+        """Compute available feedbacks for the selected user"""
+        for record in self:
+            if record.user_id:
+                record.available_feedback_ids = self.env['real.estate.feedback'].search([
+                    ('user_id', '=', record.user_id.id)
+                ], order='id desc')
+            else:
+                record.available_feedback_ids = False
+
+    @api.onchange('user_id')
+    def _onchange_user_id(self):
+        """When user changes, automatically select their most recent feedback"""
+        self.ensure_one()
+        self.feedback_id = False  # Clear existing feedback
+        if self.user_id:
+            # Force refresh the available feedbacks
+            self._compute_available_feedbacks()
+            # Search for the most recent feedback for this user, ordered by ID desc
+            latest_feedback = self.env['real.estate.feedback'].search([
+                ('user_id', '=', self.user_id.id)
+            ], order='id desc', limit=1)
+            
+            if latest_feedback:
+                self.feedback_id = latest_feedback.id
+            else:
+                return {
+                    'warning': {
+                        'title': _('No Feedback Found'),
+                        'message': _('No feedback found for this user.')
+                    }
+                }
+
     def create_recommended_detail(self, property_id, score):
         """
         Create a recommended property detail record for this recommendation.
@@ -57,12 +109,18 @@ class RealEstateRecommendedProperty(models.Model):
 
     def action_request_prediction(self):
         """Make API request to the preprocessmodel endpoint and store results"""
+        if not self.user_id:
+            raise UserError(_("Please select a user first."))
+
+        if not self.feedback_id:
+            raise UserError(_("No feedback found for this user."))
+
         try:
             url = "https://preprocessmodel.fly.dev/predict"
             headers = {'Content-Type': 'application/json'}
             data = {
-                "review": "The apartment was clean and spacious but a bit pricey.",
-                "property_id": 102,
+                "review": self.feedback_text or "",
+                "property_id": self.property_id.id if self.property_id else None,
                 "user_id": str(self.user_id.id),
                 "review_number": 1
             }
