@@ -15,6 +15,7 @@
     <field name="arch" type="xml">
       <list string="Recommended Properties">
         <field name="user_id"/>
+        <field name="overall_sentiment"/>
         <field name="recommended_property_details_ids"/>
       </list>
     </field>
@@ -26,16 +27,64 @@
     <field name="model">real_estate_recommendedproperty</field>
     <field name="arch" type="xml">
       <form string="Recommended Property">
+        <header>
+          <button string="Request Prediction" 
+                  name="action_request_prediction" 
+                  type="object"
+                  class="btn-primary"/>
+        </header>
         <sheet>
           <group>
             <field name="user_id"/>
           </group>
           <notebook>
-            <page string="Property Details">
+            <page string="Sentiment Analysis">
+              <group>
+                <group string="Overall">
+                  <field name="overall_sentiment"/>
+                  <field name="overall_confidence" widget="percentage"/>
+                </group>
+                <group string="Size">
+                  <field name="size_sentiment"/>
+                  <field name="size_confidence" widget="percentage"/>
+                </group>
+                <group string="Price">
+                  <field name="price_sentiment"/>
+                  <field name="price_confidence" widget="percentage"/>
+                </group>
+                <group string="Location">
+                  <field name="location_sentiment"/>
+                  <field name="location_confidence" widget="percentage"/>
+                </group>
+                <group string="Cleanliness">
+                  <field name="cleanliness_sentiment"/>
+                  <field name="cleanliness_confidence" widget="percentage"/>
+                </group>
+                <group string="Maintenance">
+                  <field name="maintenance_sentiment"/>
+                  <field name="maintenance_confidence" widget="percentage"/>
+                </group>
+                <group string="Amenities">
+                  <field name="amenities_sentiment"/>
+                  <field name="amenities_confidence" widget="percentage"/>
+                </group>
+              </group>
+            </page>
+            <page string="Extracted Entities">
+              <group>
+                <field name="extracted_size"/>
+                <field name="extracted_price"/>
+                <field name="extracted_location"/>
+                <field name="extracted_cleanliness"/>
+                <field name="extracted_maintenance"/>
+                <field name="extracted_amenities"/>
+              </group>
+            </page>
+            <page string="Recommended Properties">
               <field name="recommended_property_details_ids">
                 <list editable="bottom">
                   <field name="property_id"/>
-                  <field name="score"/>
+                  <field name="score" widget="percentage"/>
                 </list>
               </field>
             </page>
