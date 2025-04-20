@@ -15,9 +15,7 @@
             <list string="Property Recommendations">
              <field name="id"/>
 
-                <field name="customer_name"/>
                 <field name="recommendation_date"/>
-                <!-- <field name="recommended_property_id"/> -->
                 <field name="feedback_property_name"/>
                 <field name="feedback"/>
 
@@ -35,7 +33,6 @@
                     <group>
              <field name="id"/>
                         
-                        <field name="customer_name"/>
 
                         <field name="recommendation_date"/>
                         <field name="feedback"/>

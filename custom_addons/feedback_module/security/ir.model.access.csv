@@ -5,3 +5,5 @@ access_property_recommendation,access.property.recommendation,model_property_rec
 access_users,access.users,model_users_users,base.group_user,1,1,1,1
 access_feedback_import_users_excel_wizard,access_feedback_import_users_excel_wizard,model_feedback_import_users_excel_wizard,,1,1,1,1
 access_feedback_import_feedback_excel_wizard,access_feedback_import_feedback_excel_wizard,model_feedback_import_feedback_excel_wizard,,1,1,1,1
+access_real_estate_recommendedproperty,access.real.estate.recommendedproperty,model_real_estate_recommendedproperty,base.group_user,1,1,1,1
+access_recommended_property_details,access.recommended.property.details,model_recommended_property_details,base.group_user,1,1,1,1

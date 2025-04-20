@@ -34,7 +34,7 @@ class RealEstateProperty(models.Model):
     city = fields.Char(string='City')
     img_url = fields.Text(string='Image URL')
     # Change the field name from customer_id to user_id
-    user_id = fields.Many2one('res.partner', string='User', required=False)
+    user_id = fields.Many2one('users.users', string='User', required=False)
     status = fields.Selection([
         ('pending', 'Pending'),
         ('available', 'Available'),
