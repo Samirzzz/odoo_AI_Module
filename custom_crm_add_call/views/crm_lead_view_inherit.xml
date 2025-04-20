@@ -1,0 +1,18 @@
+<odoo>
+  <record id="crm_lead_form_add_call" model="ir.ui.view">
+    <field name="name">crm.lead.form.add.call</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_lead_view_form"/> <!-- ✅ CORRECT ONE -->
+    <field name="priority" eval="100"/>
+    <field name="arch" type="xml">
+      <xpath expr="//header" position="inside">
+        <button name="action_log_call"
+                string="Add Call"
+                type="object"
+                class="btn-primary"
+                icon="fa-phone"/>
+      </xpath>
+      
+    </field>
+  </record>
+</odoo>

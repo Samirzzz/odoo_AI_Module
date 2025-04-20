@@ -1,0 +1,27 @@
+<odoo>
+  <record id="view_crm_call_log_form" model="ir.ui.view">
+    <field name="name">crm.call.log.form</field>
+    <field name="model">crm.call.log</field>
+    <field name="arch" type="xml">
+      <form string="Call Log">
+        <sheet>
+          <group>
+            <field name="lead_id"/>
+            <field name="call_description"/>
+            <field name="call_time"/>
+            <field name="salesperson_id"/>
+            <field name="call_recording" filename="recording_filename"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_crm_call_log" model="ir.actions.act_window">
+    <field name="name">Call Logs</field>
+    <field name="res_model">crm.call.log</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="view_crm_call_log_form"/>
+    <field name="target">new</field>
+  </record>
+</odoo>
