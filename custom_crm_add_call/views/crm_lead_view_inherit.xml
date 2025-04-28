@@ -11,6 +11,8 @@
                 type="object"
                 class="btn-primary"
                 icon="fa-phone"/>
+        <button name="action_open_questionnaire" type="object" string="Client Questionnaire" class="btn-primary"/>
+
       </xpath>
       
     </field>

@@ -16,3 +16,16 @@ class CRMLead(models.Model):
                 'default_salesperson_id': self.env.user.id,
             }
         }
+
+    def action_open_questionnaire(self):  # <-- This must be INSIDE the class
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Client Questionnaire',
+            'view_mode': 'form',
+            'res_model': 'crm.lead.questionnaire',
+            'target': 'new',
+            'context': {
+                'default_lead_id': self.id,
+            }
+        }

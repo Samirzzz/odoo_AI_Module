@@ -1,0 +1,25 @@
+<odoo>
+    <record id="view_crm_lead_questionnaire_form" model="ir.ui.view">
+        <field name="name">crm.lead.questionnaire.form</field>
+        <field name="model">crm.lead.questionnaire</field>
+        <field name="arch" type="xml">
+            <form string="Client Questionnaire">
+                <sheet>
+                    <group>
+                        <field name="lead_id"/>
+                        <field name="property_type"/>
+                        <field name="number_of_rooms"/>
+                        <field name="max_budget"/>
+                        <field name="prefers_installments"/>
+                        <field name="required_features"/>
+                        <field name="desired_years"/>
+                        <field name="preferred_location"/>
+                        <field name="unit_type"/>
+                        <field name="meeting_scheduled"/>
+                        <field name="meeting_datetime"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
