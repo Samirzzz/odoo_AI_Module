@@ -23,8 +23,10 @@
         'views/property_recommendation_views.xml',
         'views/users_views.xml',
         'security/ir.model.access.csv',
-         "views/import_excel_views.xml",
+        "views/import_excel_views.xml",
         'views/real_estate_recommendedproperty_views.xml',
+        'views/call_log_views.xml',
+        'views/lead_questionnaire_views.xml',
          
 
     ],

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Form View for Questionnaire -->
+    <record id="view_feedback_lead_questionnaire_form" model="ir.ui.view">
+        <field name="name">feedback.lead.questionnaire.form</field>
+        <field name="model">feedback.lead.questionnaire</field>
+        <field name="arch" type="xml">
+            <form string="Client Questionnaire">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id" readonly="context.get('default_lead_id', False)"/>
+                            <field name="property_type"/>
+                            <field name="number_of_rooms"/>
+                            <field name="max_budget" widget="monetary"/>
+                            <field name="prefers_installments"/>
+                            <field name="unit_type"/>
+                        </group>
+                        <group>
+                            <field name="preferred_location"/>
+                            <field name="desired_years"/>
+                            <field name="feedback_id" readonly="context.get('default_feedback_id', False)"/>
+                            <field name="call_log_id" readonly="context.get('default_call_log_id', False)"/>
+                            <field name="meeting_scheduled"/>
+                            <field name="meeting_datetime"/>
+                        </group>
+                    </group>
+                    <group string="Required Features">
+                        <field name="required_features" nolabel="1" placeholder="What features is the client looking for?"/>
+                    </group>
+                    <group string="Additional Notes">
+                        <field name="notes" nolabel="1" placeholder="Any additional notes about the client's preferences..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Save" class="btn-primary" special="save"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View for Questionnaire -->
+    <record id="view_feedback_lead_questionnaire_list" model="ir.ui.view">
+        <field name="name">feedback.lead.questionnaire.list</field>
+        <field name="model">feedback.lead.questionnaire</field>
+        <field name="arch" type="xml">
+            <list string="Client Questionnaires">
+                <field name="lead_id"/>
+                <field name="property_type"/>
+                <field name="max_budget"/>
+                <field name="preferred_location"/>
+                <field name="meeting_scheduled"/>
+                <field name="meeting_datetime"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action Window for Questionnaire -->
+    <record id="action_feedback_lead_questionnaire" model="ir.actions.act_window">
+        <field name="name">Client Questionnaires</field>
+        <field name="res_model">feedback.lead.questionnaire</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Item for Questionnaire -->
+    <menuitem id="menu_feedback_lead_questionnaire"
+              name="Client Questionnaires"
+              parent="menu_users_root"
+              action="action_feedback_lead_questionnaire"
+              sequence="20"/>
+</odoo> 
