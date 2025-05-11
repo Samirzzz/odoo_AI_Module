@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Explicitly add Call Button to CRM Lead -->
+    <record id="crm_lead_view_form_inherit_call_button" model="ir.ui.view">
+        <field name="name">crm.lead.view.form.inherit.call.button</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority" eval="100"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_log_call" 
+                        string="Add Call Log" 
+                        type="object" 
+                        class="btn-primary"
+                        icon="fa-phone"/>
+            </xpath>
+        </field>
+    </record>
+</odoo> 

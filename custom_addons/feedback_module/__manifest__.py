@@ -27,8 +27,7 @@
         'views/real_estate_recommendedproperty_views.xml',
         'views/call_log_views.xml',
         'views/lead_questionnaire_views.xml',
-         
-
+        'views/crm_lead_call_button_view.xml',
     ],
     
     "installable": True,

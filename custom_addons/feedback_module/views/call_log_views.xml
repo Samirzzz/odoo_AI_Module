@@ -68,4 +68,20 @@
               parent="menu_users_root"
               action="action_feedback_call_log"
               sequence="30"/>
+              
+    <!-- Add button to CRM Lead form view -->
+    <record id="crm_lead_view_form_inherit_call_log" model="ir.ui.view">
+        <field name="name">crm.lead.view.form.inherit.call.log</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_log_call" 
+                        string="Add Call Log" 
+                        type="object" 
+                        class="btn-primary"
+                        icon="fa-phone"/>
+            </xpath>
+        </field>
+    </record>
 </odoo> 
