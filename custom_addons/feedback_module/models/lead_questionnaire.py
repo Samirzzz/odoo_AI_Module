@@ -100,4 +100,15 @@ class FeedbackLeadQuestionnaire(models.Model):
                     'sticky': True,
                     'type': 'danger',
                 }
-            } 
+            }
+
+    def action_save_and_stay(self):
+        """Save the record and keep the form open."""
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',  # Keep it as a dialog
+            'flags': {'mode': 'edit'},
+        } 

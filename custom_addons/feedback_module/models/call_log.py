@@ -8,46 +8,11 @@ import requests
 from requests_toolbelt import MultipartEncoder
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from .llama import OllamaClient
 
 _logger = logging.getLogger(__name__)
 # Disable only the InsecureRequestWarning from urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-class OllamaClient:
-    """Ollama HTTP client (no SSL verification)."""
-    def __init__(
-        self,
-        base_url: str = "http://localhost:11434/api",
-        model: str = "llama3.2:3b",
-    ):
-        self.base_url = base_url.rstrip("/")
-        self.model = model
-
-    def generate(self, prompt: str, max_tokens: int = 300) -> str:
-        try:
-            resp = requests.post(
-                f"{self.base_url}/generate",
-                json={
-                    "model": self.model,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {"max_tokens": max_tokens},
-                },
-                timeout=300,  # Increase timeout to 2 minutes
-                verify=False,
-            )
-            resp.raise_for_status()
-            return resp.json().get("response", "")
-        except requests.exceptions.Timeout:
-            _logger.error("Ollama API timeout")
-            return "Error: Ollama service timed out. The request took too long to process."
-        except requests.exceptions.ConnectionError:
-            _logger.error("Ollama API connection error")
-            return "Error: Cannot connect to Ollama service. Please ensure it's running."
-        except Exception as e:
-            _logger.error("Ollama API error: %s", str(e))
-            return f"Error: Unable to generate response. {str(e)}"
 
 
 class FeedbackCallLog(models.Model):
@@ -167,18 +132,27 @@ class FeedbackCallLog(models.Model):
             return
             
         prompt = (
-            "The following is a transcription of a phone call. Answer the eight questions at the end **in English** "
-            "using only information found in the transcript.\n\n"
+            "The following is a transcription of a phone call with a real estate client. "
+            "Extract the answers to these questions in a structured format with JUST the answer and "
+            "NO additional explanation. If the information is not available, answer with 'Unknown'.\n\n"
             f"--- Transcription ---\n{self.inference_rephrased}\n--- End of Transcription ---\n\n"
-            "1. What type of property does the client want?\n"
-            "2. How many rooms are preferred?\n"
-            "3. What is the client's maximum budget?\n"
-            "4. Does the client prefer installment plans?\n"
-            "5. What features does the client require?\n"
-            "6. When does the client want to receive the property in years?\n"
-            "7. Which location does the client prefer?\n"
-            "8. What is the type of the unit?\n\n"
-            "Please list your answers 1-8 on separate lines."
+            "1. Property Type? (e.g. apartment, villa, townhouse)\n"
+            "2. Number of Rooms? (numeric value only)\n"
+            "3. Maximum Budget? (numeric value only)\n"
+            "4. Does client prefer installments? (Yes/No)\n"
+            "5. Required Features? (list main features)\n"
+            "6. When does the client want to receive the property in years? (numeric value only)\n"
+            "7. Preferred Location? (location name only)\n"
+            "8. Unit Type? (e.g. residential, commercial, etc.)\n\n"
+            "Format your answers exactly like this, with just the direct answer for each question:\n"
+            "1. Apartment\n"
+            "2. 3\n"
+            "3. 1500000\n"
+            "4. Yes\n"
+            "5. Swimming pool, garden, security\n"
+            "6. 2\n"
+            "7. Downtown\n"
+            "8. Residential"
         )
         
         try:
@@ -190,6 +164,70 @@ class FeedbackCallLog(models.Model):
             self.write({'llama_qna': f"Error generating Q&A: {str(e)}"})
             self.env.cr.commit()
 
+    def _extract_questionnaire_data(self):
+        """Extract structured data from llama_qna to use in the questionnaire."""
+        if not self.llama_qna:
+            return {}
+            
+        # Initialize with default values
+        data = {
+            'property_type': False,
+            'number_of_rooms': 0,
+            'max_budget': 0,
+            'prefers_installments': False,
+            'required_features': False,
+            'desired_years': 0,
+            'preferred_location': False,
+            'unit_type': False,
+        }
+        
+        # Split by lines and extract data
+        lines = self.llama_qna.strip().split('\n')
+        
+        try:
+            for i, line in enumerate(lines):
+                # Skip lines that don't start with a number
+                if not line.strip() or not line[0].isdigit():
+                    continue
+                    
+                # Remove the question number and any leading/trailing spaces
+                answer = line[2:].strip() if len(line) > 2 else ""
+                
+                # Skip if answer is 'Unknown' or empty
+                if answer.lower() == 'unknown' or not answer:
+                    continue
+                    
+                # Parse answers based on the question number
+                if i == 0:  # Property Type
+                    data['property_type'] = answer
+                elif i == 1:  # Number of Rooms
+                    try:
+                        data['number_of_rooms'] = int(answer.split()[0])
+                    except:
+                        pass
+                elif i == 2:  # Max Budget
+                    # Extract numbers only
+                    budget = ''.join(c for c in answer if c.isdigit())
+                    if budget:
+                        data['max_budget'] = float(budget)
+                elif i == 3:  # Installments
+                    data['prefers_installments'] = answer.lower() in ['yes', 'true', '1']
+                elif i == 4:  # Required Features
+                    data['required_features'] = answer
+                elif i == 5:  # Desired Years
+                    try:
+                        data['desired_years'] = int(answer.split()[0])
+                    except:
+                        pass
+                elif i == 6:  # Preferred Location
+                    data['preferred_location'] = answer
+                elif i == 7:  # Unit Type
+                    data['unit_type'] = answer
+        except Exception as e:
+            _logger.error("Error extracting questionnaire data: %s", e)
+            
+        return data
+
     def action_process_audio_now(self):
         """Manually re-trigger processing."""
         for rec in self:
@@ -198,8 +236,34 @@ class FeedbackCallLog(models.Model):
         return True
 
     def action_open_questionnaire(self):
+        """Open the questionnaire in a dialog view."""
         self.ensure_one()
-        # … your existing code …
+        
+        # Find existing questionnaire or create a new one
+        questionnaire = self.env['feedback.lead.questionnaire'].search([
+            ('call_log_id', '=', self.id)
+        ], limit=1)
+        
+        if not questionnaire:
+            # Create new questionnaire with data from llama QnA
+            questionnaire_data = self._extract_questionnaire_data()
+            questionnaire = self.env['feedback.lead.questionnaire'].create({
+                'lead_id': self.lead_id.id,
+                'call_log_id': self.id,
+                'feedback_id': self.feedback_id.id if self.feedback_id else False,
+                **questionnaire_data
+            })
+        
+        # Open in dialog view
+        return {
+            'name': 'Client Questionnaire',
+            'type': 'ir.actions.act_window',
+            'res_model': 'feedback.lead.questionnaire',
+            'res_id': questionnaire.id,
+            'view_mode': 'form',
+            'target': 'new',  # This makes it open as a dialog
+            'flags': {'mode': 'edit'},
+        }
 
     def action_generate_qna(self):
         self.ensure_one()

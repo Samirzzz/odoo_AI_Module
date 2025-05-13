@@ -64,6 +64,12 @@
           <group string="AI Q&amp;A">
             <field name="llama_qna" nolabel="1" readonly="1"
                    placeholder="AI Q&amp;A answers will be generated automatically after audio processing..."/>
+            <button name="action_open_questionnaire" 
+                    string="Open Questionnaire" 
+                    type="object"
+                    class="btn-secondary oe_highlight"
+                    modifiers="{'invisible': [('llama_qna','=', False)]}"
+                    icon="fa-solid fa-clipboard"/>
           </group>
         </sheet>
         <footer>
