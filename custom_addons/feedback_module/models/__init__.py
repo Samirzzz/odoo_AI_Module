@@ -8,6 +8,8 @@ from . import real_estate_recommendedproperty
 from . import call_log
 from . import crm_lead_extension
 from . import lead_questionnaire
+from . import llama
+from . import dashboard
 
 
 

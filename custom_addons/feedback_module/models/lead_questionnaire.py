@@ -111,4 +111,27 @@ class FeedbackLeadQuestionnaire(models.Model):
             'view_mode': 'form',
             'target': 'new',  # Keep it as a dialog
             'flags': {'mode': 'edit'},
+        }
+
+    def action_view_call_log(self):
+        """Navigate to the related call log."""
+        self.ensure_one()
+        if not self.call_log_id:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Error',
+                    'message': 'No call log associated with this questionnaire.',
+                    'type': 'danger',
+                }
+            }
+            
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Call Log',
+            'res_model': 'feedback.call.log',
+            'res_id': self.call_log_id.id,
+            'view_mode': 'form',
+            'target': 'current',
         } 

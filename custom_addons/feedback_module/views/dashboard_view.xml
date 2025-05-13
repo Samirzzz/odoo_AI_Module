@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Dashboard View -->
+    <record id="view_feedback_dashboard" model="ir.ui.view">
+        <field name="name">feedback.dashboard</field>
+        <field name="model">feedback.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Call and Questionnaire Dashboard">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Call and Questionnaire Dashboard</h1>
+                    </div>
+                    
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="recent_calls" string="Recent Calls"/>
+                                <field name="recent_calls" readonly="1" widget="dashboard_calls"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="recent_questionnaires" string="Recent Questionnaires"/>
+                                <field name="recent_questionnaires" readonly="1" widget="dashboard_questionnaires"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <div class="o_dashboard_action">
+                                <button name="action_view_all_calls" 
+                                        string="View All Calls" 
+                                        type="object" 
+                                        class="btn btn-primary"/>
+                                <button name="action_view_all_questionnaires" 
+                                        string="View All Questionnaires" 
+                                        type="object" 
+                                        class="btn btn-primary ml-2"/>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Dashboard Action -->
+    <record id="action_feedback_dashboard" model="ir.actions.act_window">
+        <field name="name">Call Analysis Dashboard</field>
+        <field name="res_model">feedback.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">main</field>
+    </record>
+    
+    <!-- Dashboard Menu -->
+    <menuitem id="menu_feedback_dashboard"
+              name="Dashboard"
+              parent="menu_feedback_root"
+              action="action_feedback_dashboard"
+              sequence="10"/>
+
+    <!-- Parent Menu for module -->
+    <menuitem id="menu_feedback_root"
+              name="Call Reports"
+              web_icon="feedback_module,static/description/icon.png"
+              sequence="55"/>
+</odoo> 

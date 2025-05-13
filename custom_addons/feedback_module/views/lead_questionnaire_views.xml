@@ -1,89 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Form View for Questionnaire -->
-    <record id="view_feedback_lead_questionnaire_form" model="ir.ui.view">
-        <field name="name">feedback.lead.questionnaire.form</field>
-        <field name="model">feedback.lead.questionnaire</field>
-        <field name="arch" type="xml">
-            <form string="Client Questionnaire">
-                <sheet>
-                    <p class="alert alert-info" role="alert" 
-                       modifiers="{'invisible': [('call_log_id','=',False)]}">
-                        This form has been pre-filled with data from the call audio.
-                        Please review and correct any information as needed.
-                    </p>
-                    <group>
-                        <group>
-                            <field name="lead_id" readonly="1"/>
-                            <field name="property_type"/>
-                            <field name="number_of_rooms"/>
-                            <field name="max_budget" widget="monetary"/>
-                            <field name="prefers_installments"/>
-                            <field name="unit_type"/>
-                        </group>
-                        <group>
-                            <field name="preferred_location"/>
-                            <field name="desired_years"/>
-                            <field name="call_log_id" invisible="1"/>
-                            <field name="feedback_id" invisible="1"/>
-                            <field name="meeting_scheduled"/>
-                            <field name="meeting_datetime" modifiers="{'invisible': [('meeting_scheduled','=',False)]}"/>
-                        </group>
-                    </group>
-                    
-                    <group string="Required Features">
-                        <field name="required_features" nolabel="1" placeholder="What features is the client looking for?"/>
-                    </group>
-                    
-                    <group string="Additional Notes">
-                        <field name="notes" nolabel="1" placeholder="Any additional notes about the client's preferences..."/>
-                    </group>
-                    
-                    <!-- Llama AI Integration -->
-                    <group string="AI Property Recommendation" 
-                           modifiers="{'invisible': [('call_log_id','=',False)]}">
-                        <button name="action_generate_llama_response" 
-                                string="Generate AI Recommendation" 
-                                type="object" 
-                                class="btn-primary"
-                                icon="fa-solid fa-robot"/>
-                    </group>
-                </sheet>
-                <footer>
-                    <button string="Save" name="action_save_and_stay" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>
-        </field>
-    </record>
+  <!-- Form View for Questionnaire -->
+  <record id="view_feedback_lead_questionnaire_form" model="ir.ui.view">
+    <field name="name">feedback.lead.questionnaire.form</field>
+    <field name="model">feedback.lead.questionnaire</field>
+    <field name="arch" type="xml">
+      <form string="Client Questionnaire">
+        <sheet>
+          <p class="alert alert-info" role="alert"
+             modifiers="{'invisible': [('call_log_id','=', False)]}">
+            This form has been pre-filled with data from the call audio.
+            Please review and correct any information as needed.
+          </p>
+          <group>
+            <group>
+              <field name="lead_id" readonly="1"/>
+              <field name="property_type"/>
+              <field name="number_of_rooms"/>
+              <field name="max_budget" widget="monetary"/>
+              <field name="prefers_installments"/>
+              <field name="unit_type"/>
+            </group>
+            <group>
+              <field name="preferred_location"/>
+              <field name="desired_years"/>
+              <field name="call_log_id" invisible="1"/>
+              <field name="feedback_id" invisible="1"/>
+              <field name="meeting_scheduled"/>
+              <field name="meeting_datetime"
+                     modifiers="{'invisible': [('meeting_scheduled','=', False)]}"/>
+            </group>
+          </group>
 
-    <!-- List View for Questionnaire -->
-    <record id="view_feedback_lead_questionnaire_list" model="ir.ui.view">
-        <field name="name">feedback.lead.questionnaire.list</field>
-        <field name="model">feedback.lead.questionnaire</field>
-        <field name="arch" type="xml">
-            <list string="Client Questionnaires">
-                <field name="lead_id"/>
-                <field name="property_type"/>
-                <field name="max_budget"/>
-                <field name="preferred_location"/>
-                <field name="meeting_scheduled"/>
-                <field name="meeting_datetime"/>
-            </list>
-        </field>
-    </record>
+          <group string="Required Features">
+            <field name="required_features" nolabel="1"
+                   placeholder="What features is the client looking for?"/>
+          </group>
 
-    <!-- Action Window for Questionnaire -->
-    <record id="action_feedback_lead_questionnaire" model="ir.actions.act_window">
-        <field name="name">Client Questionnaires</field>
-        <field name="res_model">feedback.lead.questionnaire</field>
-        <field name="view_mode">list,form</field>
-    </record>
+          <group string="Additional Notes">
+            <field name="notes" nolabel="1"
+                   placeholder="Any additional notes about the client's preferences..."/>
+          </group>
 
-    <!-- Menu Item for Questionnaire -->
-    <menuitem id="menu_feedback_lead_questionnaire"
-              name="Client Questionnaires"
-              parent="menu_users_root"
-              action="action_feedback_lead_questionnaire"
-              sequence="20"/>
+          <!-- Llama AI Integration -->
+          <group string="AI Property Recommendation"
+                 modifiers="{'invisible': [('call_log_id','=', False)]}">
+            <button name="action_generate_llama_response"
+                    string="Generate AI Recommendation"
+                    type="object"
+                    class="btn-primary"
+                    icon="fa-solid fa-robot"/>
+          </group>
+        </sheet>
+        <footer>
+          <button string="Save" name="action_save_and_stay"
+                  type="object" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!-- List View for Questionnaire -->
+  <record id="view_feedback_lead_questionnaire_list" model="ir.ui.view">
+    <field name="name">feedback.lead.questionnaire.list</field>
+    <field name="model">feedback.lead.questionnaire</field>
+    <field name="arch" type="xml">
+      <list string="Client Questionnaires">
+        <field name="lead_id"/>
+        <field name="property_type"/>
+        <field name="number_of_rooms"/>
+        <field name="max_budget" widget="monetary"/>
+        <field name="preferred_location"/>
+        <field name="unit_type"/>
+        <field name="meeting_scheduled"/>
+        <field name="call_log_id" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Search View for Questionnaire -->
+  <record id="view_feedback_lead_questionnaire_search" model="ir.ui.view">
+    <field name="name">feedback.lead.questionnaire.search</field>
+    <field name="model">feedback.lead.questionnaire</field>
+    <field name="arch" type="xml">
+      <search string="Search Questionnaires">
+        <field name="lead_id"/>
+        <field name="property_type"/>
+        <field name="preferred_location"/>
+        <filter string="Has Call Log" name="has_call_log"
+                domain="[('call_log_id','!=',False)]"/>
+        <filter string="Meeting Scheduled" name="meeting_scheduled"
+                domain="[('meeting_scheduled','=',True)]"/>
+        <group expand="0" string="Group By">
+          <filter string="Lead" name="group_by_lead"
+                  context="{'group_by':'lead_id'}"/>
+          <filter string="Property Type" name="group_by_property_type"
+                  context="{'group_by':'property_type'}"/>
+          <filter string="Location" name="group_by_location"
+                  context="{'group_by':'preferred_location'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action Window for Questionnaire -->
+  <record id="action_feedback_lead_questionnaire" model="ir.actions.act_window">
+    <field name="name">Client Questionnaires</field>
+    <field name="res_model">feedback.lead.questionnaire</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Menu Item for Questionnaire -->
+  <menuitem id="menu_feedback_lead_questionnaire"
+            name="Client Questionnaires"
+            parent="menu_users_root"
+            action="action_feedback_lead_questionnaire"
+            sequence="20"/>
 </odoo>

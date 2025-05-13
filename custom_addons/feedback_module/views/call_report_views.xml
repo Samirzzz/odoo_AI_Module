@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Call Report List View -->
+  <record id="view_call_report_list" model="ir.ui.view">
+    <field name="name">call.report.list</field>
+    <field name="model">feedback.call.log</field>
+    <field name="arch" type="xml">
+      <list string="Call Reports">
+        <field name="lead_id"/>
+        <field name="call_time"/>
+        <field name="salesperson_id"/>
+        <field name="inference_status"/>
+        <field name="inference_language"/>
+        <!-- expose llama_qna as an optional column to show which have a questionnaire -->
+        <field name="llama_qna" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Call Report Search View -->
+  <record id="view_call_report_search" model="ir.ui.view">
+    <field name="name">call.report.search</field>
+    <field name="model">feedback.call.log</field>
+    <field name="arch" type="xml">
+      <search string="Search Call Reports">
+        <field name="lead_id"/>
+        <field name="salesperson_id"/>
+        <filter string="Successful Inference" name="successful_inference"
+                domain="[('inference_status','=','success')]"/>
+        <filter string="Failed Inference" name="failed_inference"
+                domain="[('inference_status','=','error')]"/>
+        <filter string="Pending Inference" name="pending_inference"
+                domain="[('inference_status','=','pending')]"/>
+        <filter string="Has Questionnaire" name="has_questionnaire"
+                domain="[('llama_qna','!=',False)]"/>
+        <group expand="0" string="Group By">
+          <filter string="Lead" name="group_by_lead"
+                  context="{'group_by':'lead_id'}"/>
+          <filter string="Salesperson" name="group_by_salesperson"
+                  context="{'group_by':'salesperson_id'}"/>
+          <filter string="Status" name="group_by_status"
+                  context="{'group_by':'inference_status'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Window Action for Call Reports -->
+  <record id="action_call_reports" model="ir.actions.act_window">
+    <field name="name">Call Reports</field>
+    <field name="res_model">feedback.call.log</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{'search_default_successful_inference': 1, 'search_default_has_questionnaire': 1}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        No call reports found.
+      </p>
+      <p>
+        Add a new call log to start recording call data.
+      </p>
+    </field>
+  </record>
+
+  <!-- Menu for Call Reports -->
+  <menuitem id="menu_call_reports"
+            name="Call Reports"
+            parent="menu_feedback_root"
+            action="action_call_reports"
+            sequence="40"/>
+</odoo>

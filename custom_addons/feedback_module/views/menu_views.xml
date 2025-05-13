@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Main Menu for module -->
+    <menuitem id="menu_feedback_root"
+              name="Call Analysis"
+              web_icon="feedback_module,static/description/icon.png"
+              sequence="55"/>
+              
+    <!-- Submenu for Call Logs -->
+    <menuitem id="menu_feedback_call_logs"
+              name="Call Logs"
+              parent="menu_feedback_root"
+              action="action_feedback_call_log"
+              sequence="20"/>
+              
+    <!-- Submenu for Questionnaires -->
+    <menuitem id="menu_feedback_questionnaires"
+              name="Client Questionnaires"
+              parent="menu_feedback_root"
+              action="action_feedback_lead_questionnaire"
+              sequence="30"/>
+</odoo> 
