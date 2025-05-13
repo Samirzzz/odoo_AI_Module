@@ -6,10 +6,17 @@
         <field name="model">feedback.lead.questionnaire</field>
         <field name="arch" type="xml">
             <form string="Client Questionnaire">
+                <header>
+                    <button name="action_generate_llama_response" 
+                            string="Generate AI Recommendation" 
+                            type="object" 
+                            class="btn-primary"
+                            icon="fa-solid fa-robot"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="lead_id" readonly="context.get('default_lead_id', False)"/>
+                            <field name="lead_id" readonly="1"/>
                             <field name="property_type"/>
                             <field name="number_of_rooms"/>
                             <field name="max_budget" widget="monetary"/>
@@ -19,17 +26,50 @@
                         <group>
                             <field name="preferred_location"/>
                             <field name="desired_years"/>
-                            <field name="feedback_id" readonly="context.get('default_feedback_id', False)"/>
-                            <field name="call_log_id" readonly="context.get('default_call_log_id', False)"/>
+                            <field name="feedback_id" readonly="1"/>
+                            <field name="call_log_id" readonly="1"/>
                             <field name="meeting_scheduled"/>
                             <field name="meeting_datetime"/>
                         </group>
                     </group>
+                    
+                    <!-- Call Audio Inference Results -->
+                    <group string="Audio Transcription Results"
+                           modifiers="{'invisible': ['|', ('call_log_id','=',False), ('call_inference_status','!=','success')]}">
+                        <!-- hidden status flag -->
+                        <field name="call_inference_status" invisible="1"/>
+                        <field name="call_inference_language" readonly="1"/>
+                        <group string="Original Transcription" colspan="4">
+                            <field name="call_inference_transcript" nolabel="1" readonly="1"/>
+                        </group>
+                        <group string="Translation" colspan="4"
+                               modifiers="{'invisible': [('call_inference_translation','=',False)]}">
+                            <field name="call_inference_translation" nolabel="1" readonly="1"/>
+                        </group>
+                        <group string="Rephrased Text" colspan="4"
+                               modifiers="{'invisible': [('call_inference_rephrased','=',False)]}">
+                            <field name="call_inference_rephrased" nolabel="1" readonly="1"/>
+                        </group>
+                    </group>
+                    
                     <group string="Required Features">
                         <field name="required_features" nolabel="1" placeholder="What features is the client looking for?"/>
                     </group>
                     <group string="Additional Notes">
                         <field name="notes" nolabel="1" placeholder="Any additional notes about the client's preferences..."/>
+                    </group>
+                    
+                    <!-- Llama AI Integration -->
+                    <group string="AI Property Recommendation">
+                        <field name="llama_prompt" placeholder="Enter a prompt to generate content about the ideal property..."/>
+                        <button name="action_generate_llama_response" 
+                                string="Generate" 
+                                type="object" 
+                                class="btn-primary"
+                                icon="fa-solid fa-wand-magic-sparkles"/>
+                        <field name="llama_response" nolabel="1" readonly="1"
+                               modifiers="{'invisible': [('llama_response','=',False)]}"
+                               placeholder="AI generated content will appear here..."/>
                     </group>
                 </sheet>
                 <footer>
@@ -69,4 +109,4 @@
               parent="menu_users_root"
               action="action_feedback_lead_questionnaire"
               sequence="20"/>
-</odoo> 
+</odoo>
