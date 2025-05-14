@@ -68,7 +68,6 @@
                     string="Open Questionnaire" 
                     type="object"
                     class="btn-secondary oe_highlight"
-                    modifiers="{'invisible': [('llama_qna','=', False)]}"
                     icon="fa-solid fa-clipboard"/>
           </group>
         </sheet>
@@ -102,7 +101,7 @@
   </record>
   <menuitem id="menu_feedback_call_log"
             name="Call Logs"
-            parent="menu_users_root"
+            parent="menu_feedback_root"
             action="action_feedback_call_log"
             sequence="30"/>
 

@@ -39,6 +39,7 @@ class FeedbackCallLog(models.Model):
 
     is_processing         = fields.Boolean(default=False)
     llama_qna             = fields.Text()
+    recommendation_results = fields.Html(string="Recommendation Results", readonly=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -69,7 +70,7 @@ class FeedbackCallLog(models.Model):
         self.write({'is_processing': True, 'inference_status': 'pending'})
         self.env.cr.commit()
 
-        api_url = "http://cfc5-34-16-136-168.ngrok-free.app/invocations"
+        api_url = "http://500b-34-124-148-71.ngrok-free.app/invocations"
         raw = base64.b64decode(self.call_recording)
         fname = self.recording_filename or "recording.wav"
         size_mb = len(raw) / (1024 * 1024)
@@ -234,7 +235,7 @@ class FeedbackCallLog(models.Model):
             if not rec.is_processing:
                 rec._process_audio_file()
         return True
-
+        
     def action_open_questionnaire(self):
         """Open the questionnaire in a dialog view."""
         self.ensure_one()
@@ -255,7 +256,7 @@ class FeedbackCallLog(models.Model):
             })
         
         # Open in dialog view
-        return {
+            return {
             'name': 'Client Questionnaire',
             'type': 'ir.actions.act_window',
             'res_model': 'feedback.lead.questionnaire',
@@ -304,4 +305,4 @@ class FeedbackCallLog(models.Model):
             'view_mode': 'form',
             'target': 'current',
             'flags': {'mode': 'edit'}
-        }
+        } 

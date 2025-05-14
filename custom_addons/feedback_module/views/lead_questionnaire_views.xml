@@ -1,28 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <!-- Form View for Questionnaire -->
+  <!-- Updated view with fixes for recommendations display -->
   <record id="view_feedback_lead_questionnaire_form" model="ir.ui.view">
     <field name="name">feedback.lead.questionnaire.form</field>
     <field name="model">feedback.lead.questionnaire</field>
     <field name="arch" type="xml">
       <form string="Client Questionnaire">
+        <style>
+          .property-card {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fff;
+          }
+          .property-card .property-title {
+            font-weight: bold;
+            color: #4a4a4a;
+          }
+          .property-card .badge {
+            font-size: 0.8em;
+            padding: 5px 8px;
+          }
+        </style>
         <sheet>
           <p class="alert alert-info" role="alert"
              modifiers="{'invisible': [('call_log_id','=', False)]}">
             This form has been pre-filled with data from the call audio.
             Please review and correct any information as needed.
           </p>
+
           <group>
             <group>
               <field name="lead_id" readonly="1"/>
               <field name="property_type"/>
               <field name="number_of_rooms"/>
+              <field name="bathrooms"/>
+              <field name="area"/>
               <field name="max_budget" widget="monetary"/>
               <field name="prefers_installments"/>
-              <field name="unit_type"/>
             </group>
             <group>
               <field name="preferred_location"/>
+              <field name="unit_type"/>
               <field name="desired_years"/>
               <field name="call_log_id" invisible="1"/>
               <field name="feedback_id" invisible="1"/>
@@ -32,14 +53,40 @@
             </group>
           </group>
 
-          <group string="Required Features">
-            <field name="required_features" nolabel="1"
-                   placeholder="What features is the client looking for?"/>
-          </group>
-
-          <group string="Additional Notes">
-            <field name="notes" nolabel="1"
-                   placeholder="Any additional notes about the client's preferences..."/>
+          <!-- Property Recommendations -->
+          <notebook>
+            <page string="Property Recommendations" name="recommended_properties_page">
+              <field name="recommendation_results" 
+                     nolabel="1" readonly="1" widget="html"
+                     modifiers="{'invisible': [('recommendation_results','=',False)]}"
+                     placeholder="No recommendations available yet."/>
+              <field name="recommended_properties" 
+                     nolabel="1" readonly="1" widget="html"
+                     modifiers="{'invisible': [('recommended_properties','=',False)]}"
+                     placeholder="No property recommendations available yet."/>
+              <div class="alert alert-info" role="alert" 
+                   modifiers="{'invisible': ['|', ('recommended_properties','!=',False), ('recommendation_results','!=',False)]}">
+                <span>Click "Find Matching Properties" to search for properties matching this client's preferences.</span>
+              </div>
+            </page>
+            <page string="Client Requirements" name="client_requirements_page">
+              <group string="Required Features">
+                <field name="required_features" nolabel="1"
+                       placeholder="What features is the client looking for?"/>
+              </group>
+              <group string="Additional Notes">
+                <field name="notes" nolabel="1"
+                       placeholder="Any additional notes about the client's preferences..."/>
+              </group>
+            </page>
+          </notebook>
+          
+          <group>
+            <button name="action_generate_property_recommendations"
+                    string="Find Matching Properties"
+                    type="object"
+                    class="btn-primary"
+                    icon="fa-solid fa-search"/>
           </group>
 
           <!-- Llama AI Integration -->
@@ -88,10 +135,12 @@
         <field name="lead_id"/>
         <field name="property_type"/>
         <field name="preferred_location"/>
+
         <filter string="Has Call Log" name="has_call_log"
                 domain="[('call_log_id','!=',False)]"/>
         <filter string="Meeting Scheduled" name="meeting_scheduled"
                 domain="[('meeting_scheduled','=',True)]"/>
+                
         <group expand="0" string="Group By">
           <filter string="Lead" name="group_by_lead"
                   context="{'group_by':'lead_id'}"/>
@@ -114,7 +163,7 @@
   <!-- Menu Item for Questionnaire -->
   <menuitem id="menu_feedback_lead_questionnaire"
             name="Client Questionnaires"
-            parent="menu_users_root"
+            parent="menu_feedback_root"
             action="action_feedback_lead_questionnaire"
             sequence="20"/>
 </odoo>

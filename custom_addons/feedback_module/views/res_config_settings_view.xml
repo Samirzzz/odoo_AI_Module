@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_feedback" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.feedback</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="80"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <form position="inside">
+                <div class="app_settings_block" data-string="Feedback Module" data-key="feedback_module">
+                    <h2>Property Recommendations Settings</h2>
+                    <div class="row mt16 o_settings_container" id="property_recommendations">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="pinecone_api_key" string="Pinecone API Key"/>
+                                <field name="pinecone_api_key" password="True"/>
+                                <div class="text-muted">
+                                    API key for Pinecone vector database
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="pinecone_index" string="Pinecone Index Name"/>
+                                <field name="pinecone_index"/>
+                                <div class="text-muted">
+                                    Index name to use in Pinecone (default: recommendation-index)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="embedding_model" string="Embedding Model"/>
+                                <field name="embedding_model"/>
+                                <div class="text-muted">
+                                    Hugging Face model name for embeddings (default: distilbert-base-uncased)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_feedback_module_configuration" model="ir.actions.act_window">
+        <field name="name">Feedback Module Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'feedback_module'}</field>
+    </record>
+
+    <menuitem id="menu_feedback_module_settings"
+              name="Settings"
+              parent="menu_feedback_root"
+              action="action_feedback_module_configuration"
+              sequence="100"/>
+</odoo> 

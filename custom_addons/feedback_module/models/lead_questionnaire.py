@@ -20,6 +20,10 @@ class FeedbackLeadQuestionnaire(models.Model):
     meeting_scheduled = fields.Boolean(string="Meeting Scheduled")
     meeting_datetime = fields.Datetime(string="Meeting Date & Time")
     
+    # Added area field
+    area = fields.Float(string="Area (sq.m)", help="Desired property area in square meters")
+    bathrooms = fields.Integer(string="Bathrooms", help="Number of bathrooms required")
+    
     # Additional fields for feedback module
     feedback_id = fields.Many2one('real.estate.feedback', string="Related Feedback")
     call_log_id = fields.Many2one('feedback.call.log', string="Related Call Log")
@@ -31,6 +35,9 @@ class FeedbackLeadQuestionnaire(models.Model):
     call_inference_transcript = fields.Text(related="call_log_id.inference_transcript", string="Transcription", readonly=True)
     call_inference_translation = fields.Text(related="call_log_id.inference_translation", string="Translation", readonly=True)
     call_inference_rephrased = fields.Text(related="call_log_id.inference_rephrased", string="Rephrased Text", readonly=True)
+    
+    # Related field to access call log recommendations
+    recommendation_results = fields.Html(related="call_log_id.recommendation_results", string="Recommendation Results", readonly=True)
     
     # Llama integration fields
     llama_prompt = fields.Text(string="AI Prompt", 

@@ -10,6 +10,8 @@ from . import crm_lead_extension
 from . import lead_questionnaire
 from . import llama
 from . import dashboard
+from . import property_vector_search
+from . import res_config_settings
 
 
 

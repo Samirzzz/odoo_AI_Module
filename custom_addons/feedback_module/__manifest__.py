@@ -24,6 +24,7 @@
         'views/lead_questionnaire_views.xml',
         'views/call_report_views.xml',
         'views/dashboard_view.xml',
+        'views/res_config_settings_view.xml',
     ],
     
     "installable": True,
