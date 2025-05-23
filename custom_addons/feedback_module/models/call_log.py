@@ -70,7 +70,8 @@ class FeedbackCallLog(models.Model):
         self.write({'is_processing': True, 'inference_status': 'pending'})
         self.env.cr.commit()
 
-        api_url = "http://d8e3-35-227-178-11.ngrok-free.app/invocations"
+        # API URL for transcription service
+        api_url = "http://0001-34-147-125-189.ngrok-free.app/invocations"
         raw = base64.b64decode(self.call_recording)
         fname = self.recording_filename or "recording.wav"
         size_mb = len(raw) / (1024 * 1024)
@@ -151,18 +152,20 @@ class FeedbackCallLog(models.Model):
             "3. Maximum Budget? (numeric value only)\n"
             "4. Does client prefer installments? (Yes/No)\n"
             "5. Required Features? (list main features)\n"
-            "6. When does the client want to receive the property in years? (numeric value only)\n"
+            "6. When does the client want to receive the property in years? (numeric value only, can be decimal like 1.5)\n"
             "7. Preferred Location? (location name only)\n"
-            "8. Unit Type? (e.g. residential, commercial, etc.)\n\n"
+            "8. Unit Type? (e.g. residential, commercial, etc.)\n"
+            "9. Did the client agree to a meeting? (Yes/No/Unknown)\n\n"
             "Format your answers exactly like this, with just the direct answer for each question:\n"
             "1. Apartment\n"
             "2. 3\n"
-            "3. 1500000\n"
+            "3. 2000000\n"
             "4. Yes\n"
             "5. Swimming pool, garden, security\n"
-            "6. 2\n"
-            "7. Downtown\n"
-            "8. Residential"
+            "6. 1.5\n"
+            "7. R8\n"
+            "8. Residential\n"
+            "9. Yes"
         )
         
         try:
@@ -189,6 +192,7 @@ class FeedbackCallLog(models.Model):
             'desired_years': 0,
             'preferred_location': False,
             'unit_type': False,
+            'meeting_agreed': False,
         }
         
         # Split by lines and extract data
@@ -226,7 +230,9 @@ class FeedbackCallLog(models.Model):
                     data['required_features'] = answer
                 elif i == 5:  # Desired Years
                     try:
-                        data['desired_years'] = float(answer.split()[0])
+                        # Handle decimal values properly
+                        years = answer.split()[0]
+                        data['desired_years'] = float(years)
                     except:
                         pass
                 elif i == 6:  # Preferred Location
@@ -235,6 +241,8 @@ class FeedbackCallLog(models.Model):
                     data['preferred_location'] = location
                 elif i == 7:  # Unit Type
                     data['unit_type'] = answer
+                elif i == 8:  # Meeting Agreement
+                    data['meeting_agreed'] = answer.lower() in ['yes', 'true', '1']
         except Exception as e:
             _logger.error("Error extracting questionnaire data: %s", e)
             

@@ -325,6 +325,12 @@ class FeedbackLeadQuestionnaire(models.Model):
         store=True
     )
     
+    # Meeting agreement field
+    meeting_agreed = fields.Boolean(
+        string="Meeting Agreed",
+        help="Whether the client agreed to a meeting"
+    )
+    
     @api.model
     def _init_system_parameters(self):
         """Initialize system parameters for property vector search."""

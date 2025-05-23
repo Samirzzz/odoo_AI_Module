@@ -47,6 +47,7 @@
               <field name="desired_years"/>
               <field name="call_log_id" invisible="1"/>
               <field name="feedback_id" invisible="1"/>
+              <field name="meeting_agreed" string="Meeting Agreed"/>
               <field name="meeting_scheduled"/>
               <field name="meeting_datetime"
                      modifiers="{'invisible': [('meeting_scheduled','=', False)]}"/>
