@@ -330,6 +330,12 @@ class FeedbackLeadQuestionnaire(models.Model):
         string="Meeting Agreed",
         help="Whether the client agreed to a meeting"
     )
+
+    # Change desired_years to Float
+    desired_years = fields.Float(
+        string="Desired Years to Receive Property",
+        help="Number of years until the client wants to receive the property"
+    )
     
     @api.model
     def _init_system_parameters(self):

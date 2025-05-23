@@ -44,7 +44,7 @@
             <group>
               <field name="preferred_location"/>
               <field name="unit_type"/>
-              <field name="desired_years"/>
+              <field name="desired_years" widget="float"/>
               <field name="call_log_id" invisible="1"/>
               <field name="feedback_id" invisible="1"/>
               <field name="meeting_agreed" string="Meeting Agreed"/>
