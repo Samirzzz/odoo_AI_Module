@@ -70,7 +70,7 @@ class FeedbackCallLog(models.Model):
         self.write({'is_processing': True, 'inference_status': 'pending'})
         self.env.cr.commit()
 
-        api_url = "http://500b-34-124-148-71.ngrok-free.app/invocations"
+        api_url = "http://d8e3-35-227-178-11.ngrok-free.app/invocations"
         raw = base64.b64decode(self.call_recording)
         fname = self.recording_filename or "recording.wav"
         size_mb = len(raw) / (1024 * 1024)
@@ -111,19 +111,28 @@ class FeedbackCallLog(models.Model):
             if result.get('status') == 'success' and result.get('final_rephrased_text'):
                 self._generate_qna_from_rephrased()
                 
+        except requests.exceptions.ConnectionError as e:
+            _logger.error("Connection error during transcription: %s", e)
+            self.write({
+                'inference_status': 'error',
+                'inference_transcript': 'Connection to transcription service failed. Please check if the service is running and the API URL is correct.',
+                'is_processing': False,
+            })
+            self.env.cr.commit()
+        except requests.exceptions.Timeout as e:
+            _logger.error("Timeout during transcription: %s", e)
+            self.write({
+                'inference_status': 'error',
+                'inference_transcript': 'Transcription service timed out. Please try again.',
+                'is_processing': False,
+            })
+            self.env.cr.commit()
         except Exception as e:
             _logger.error("Audio processing failed: %s", e)
-            msg = str(e).lower()
-            if "getaddrinfo failed" in msg or "max retries" in msg:
-                user_msg = "Cannot reach transcription service; check your URL."
-            elif "timeout" in msg:
-                user_msg = "Transcription service timed out."
-            else:
-                user_msg = f"Transcription error: {e}"
             self.write({
-                'inference_status':     'error',
-                'inference_transcript': user_msg,
-                'is_processing':        False,
+                'inference_status': 'error',
+                'inference_transcript': f'Transcription error: {str(e)}',
+                'is_processing': False,
             })
             self.env.cr.commit()
             
@@ -217,11 +226,13 @@ class FeedbackCallLog(models.Model):
                     data['required_features'] = answer
                 elif i == 5:  # Desired Years
                     try:
-                        data['desired_years'] = int(answer.split()[0])
+                        data['desired_years'] = float(answer.split()[0])
                     except:
                         pass
                 elif i == 6:  # Preferred Location
-                    data['preferred_location'] = answer
+                    # Handle R8/R7 format by taking first location
+                    location = answer.split('/')[0].strip()
+                    data['preferred_location'] = location
                 elif i == 7:  # Unit Type
                     data['unit_type'] = answer
         except Exception as e:
@@ -255,15 +266,16 @@ class FeedbackCallLog(models.Model):
                 **questionnaire_data
             })
         
-        # Open in dialog view
-            return {
+        # Open in dialog view with force_reload to ensure it opens
+        return {
             'name': 'Client Questionnaire',
             'type': 'ir.actions.act_window',
             'res_model': 'feedback.lead.questionnaire',
             'res_id': questionnaire.id,
             'view_mode': 'form',
-            'target': 'new',  # This makes it open as a dialog
+            'target': 'new',
             'flags': {'mode': 'edit'},
+            'context': {'force_reload': True}  # Force reload to ensure it opens
         }
 
     def action_generate_qna(self):
