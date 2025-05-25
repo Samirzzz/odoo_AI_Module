@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <!-- Form View for Questionnaire -->
-  <!-- Updated view with fixes for recommendations display -->
   <record id="view_feedback_lead_questionnaire_form" model="ir.ui.view">
     <field name="name">feedback.lead.questionnaire.form</field>
     <field name="model">feedback.lead.questionnaire</field>
     <field name="arch" type="xml">
-      <form string="Client Questionnaire">
-        <style>
-          .property-card {
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #fff;
-          }
-          .property-card .property-title {
-            font-weight: bold;
-            color: #4a4a4a;
-          }
-          .property-card .badge {
-            font-size: 0.8em;
-            padding: 5px 8px;
-          }
-        </style>
+      <form string="Lead Questionnaire">
+        <header>
+          <button name="action_generate_property_recommendations"
+                  string="Find Matching Properties"
+                  type="object"
+                  class="btn-primary"
+                  icon="fa-search"/>
+        </header>
         <sheet>
           <p class="alert alert-info" role="alert"
              modifiers="{'invisible': [('call_log_id','=', False)]}">
@@ -33,72 +22,60 @@
 
           <group>
             <group>
-              <field name="lead_id" readonly="1"/>
+              <field name="name" invisible="1"/>
+              <field name="lead_id"/>
+              <field name="call_log_id" options="{'no_open': True}" readonly="1"/>
+              <field name="feedback_id" invisible="1"/>
+              
+              <!-- Property Details -->
               <field name="property_type"/>
-              <field name="number_of_rooms"/>
+              <field name="unit_type"/>
+              <field name="bedrooms"/>
               <field name="bathrooms"/>
               <field name="area"/>
-              <field name="max_budget" widget="monetary"/>
-              <field name="prefers_installments"/>
+              
+              <!-- Financial Details -->
+              <field name="max_price"/>
+              <field name="min_price" readonly="1" force_save="1"/>
+              <field name="payment_option"/>
+              <field name="installment_years" modifiers="{'invisible': [('payment_option','!=','installment')]}"/>
+              <field name="down_payment"/>
             </group>
             <group>
-              <field name="preferred_location"/>
-              <field name="unit_type"/>
-              <field name="desired_years" widget="float"/>
-              <field name="call_log_id" invisible="1"/>
-              <field name="feedback_id" invisible="1"/>
-              <field name="meeting_agreed" string="Meeting Agreed"/>
-              <field name="meeting_scheduled"/>
+              <!-- Location and Features -->
+              <field name="city"/>
+              <field name="features" widget="text"/>
+              <field name="finishing_type"/>
+              <field name="delivery_in"/>
+              
+              <!-- Meeting Details -->
+              <field name="meeting_agreed"/>
+              <field name="meeting_scheduled_info"/>
+              <field name="meeting_scheduled" modifiers="{'readonly': [('meeting_agreed','=',False)]}"/>
               <field name="meeting_datetime"
-                     modifiers="{'invisible': [('meeting_scheduled','=', False)]}"/>
+                     modifiers="{'invisible': [('meeting_scheduled','=', False)], 'readonly': [('meeting_agreed','=',False)]}"/>
+              
+              <!-- Additional Information -->
+              <field name="notes" widget="text"/>
             </group>
           </group>
 
           <!-- Property Recommendations -->
           <notebook>
-            <page string="Property Recommendations" name="recommended_properties_page">
-              <field name="recommendation_results" 
-                     nolabel="1" readonly="1" widget="html"
-                     modifiers="{'invisible': [('recommendation_results','=',False)]}"
-                     placeholder="No recommendations available yet."/>
-              <field name="recommended_properties" 
-                     nolabel="1" readonly="1" widget="html"
-                     modifiers="{'invisible': [('recommended_properties','=',False)]}"
-                     placeholder="No property recommendations available yet."/>
-              <div class="alert alert-info" role="alert" 
-                   modifiers="{'invisible': ['|', ('recommended_properties','!=',False), ('recommendation_results','!=',False)]}">
-                <span>Click "Find Matching Properties" to search for properties matching this client's preferences.</span>
-              </div>
+            <page string="Recommended Properties" name="recommended_properties">
+              <field name="recommended_properties" nolabel="1"/>
             </page>
-            <page string="Client Requirements" name="client_requirements_page">
-              <group string="Required Features">
-                <field name="required_features" nolabel="1"
-                       placeholder="What features is the client looking for?"/>
-              </group>
-              <group string="Additional Notes">
-                <field name="notes" nolabel="1"
-                       placeholder="Any additional notes about the client's preferences..."/>
+            <page string="Call Information" name="call_info" 
+                  modifiers="{'invisible': [('call_log_id','=', False)]}">
+              <group>
+                <field name="call_inference_status"/>
+                <field name="call_inference_language"/>
+                <field name="call_inference_transcript" widget="text"/>
+                <field name="call_inference_translation" widget="text"/>
+                <field name="call_inference_rephrased" widget="text"/>
               </group>
             </page>
           </notebook>
-          
-          <group>
-            <button name="action_generate_property_recommendations"
-                    string="Find Matching Properties"
-                    type="object"
-                    class="btn-primary"
-                    icon="fa-solid fa-search"/>
-          </group>
-
-          <!-- Llama AI Integration -->
-          <group string="AI Property Recommendation"
-                 modifiers="{'invisible': [('call_log_id','=', False)]}">
-            <button name="action_generate_llama_response"
-                    string="Generate AI Recommendation"
-                    type="object"
-                    class="btn-primary"
-                    icon="fa-solid fa-robot"/>
-          </group>
         </sheet>
         <footer>
           <button string="Save" name="action_save_and_stay"
@@ -115,12 +92,13 @@
     <field name="model">feedback.lead.questionnaire</field>
     <field name="arch" type="xml">
       <list string="Client Questionnaires">
+        <field name="name"/>
         <field name="lead_id"/>
         <field name="property_type"/>
-        <field name="number_of_rooms"/>
-        <field name="max_budget" widget="monetary"/>
-        <field name="preferred_location"/>
         <field name="unit_type"/>
+        <field name="bedrooms"/>
+        <field name="max_price" widget="monetary"/>
+        <field name="city"/>
         <field name="meeting_scheduled"/>
         <field name="call_log_id" optional="hide"/>
       </list>
@@ -133,9 +111,11 @@
     <field name="model">feedback.lead.questionnaire</field>
     <field name="arch" type="xml">
       <search string="Search Questionnaires">
+        <field name="name"/>
         <field name="lead_id"/>
         <field name="property_type"/>
-        <field name="preferred_location"/>
+        <field name="unit_type"/>
+        <field name="city"/>
 
         <filter string="Has Call Log" name="has_call_log"
                 domain="[('call_log_id','!=',False)]"/>
@@ -147,8 +127,10 @@
                   context="{'group_by':'lead_id'}"/>
           <filter string="Property Type" name="group_by_property_type"
                   context="{'group_by':'property_type'}"/>
-          <filter string="Location" name="group_by_location"
-                  context="{'group_by':'preferred_location'}"/>
+          <filter string="Unit Type" name="group_by_unit_type" 
+                  context="{'group_by': 'unit_type'}"/>          
+          <filter string="City" name="group_by_city"
+                  context="{'group_by':'city'}"/>
         </group>
       </search>
     </field>
@@ -158,7 +140,7 @@
   <record id="action_feedback_lead_questionnaire" model="ir.actions.act_window">
     <field name="name">Client Questionnaires</field>
     <field name="res_model">feedback.lead.questionnaire</field>
-    <field name="view_mode">list,form</field>
+    <field name="view_mode">tree,form</field>
   </record>
 
   <!-- Menu Item for Questionnaire -->

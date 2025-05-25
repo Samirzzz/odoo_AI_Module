@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="assets_backend" name="feedback_module assets" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/feedback_module/static/src/js/auto_fetch_users.js"></script>
-        </xpath>
-    </template>
+    <data>
+        <template id="assets_backend" name="feedback_module assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/feedback_module/static/src/js/property_search.js"></script>
+            </xpath>
+        </template>
+    </data>
 </odoo> 
