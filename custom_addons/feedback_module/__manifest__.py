@@ -26,6 +26,9 @@
         'views/call_report_views.xml',
         'views/dashboard_view.xml',
         'views/res_config_settings_view.xml',
+        'views/property_recommendation_views.xml',
+        'views/real_estate_recommendedproperty_views.xml',
+        'views/segmentation_views.xml',
     ],
     
     "installable": True,

@@ -12,6 +12,7 @@ from . import llama
 from . import dashboard
 from . import property_vector_search
 from . import res_config_settings
+from . import segmentation
 
 
 

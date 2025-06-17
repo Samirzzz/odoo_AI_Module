@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_property_segmentation_list" model="ir.ui.view">
+        <field name="name">property.segmentation.list</field>
+        <field name="model">property.segmentation</field>
+        <field name="arch" type="xml">
+            <list string="Property Segments">
+                <field name="cluster_id"/>
+                <field name="name"/>
+                <field name="size"/>
+                <field name="favorite_property_type"/>
+                <field name="favorite_city"/>
+                <field name="avg_favorited_price"/>
+                <field name="property_count"/>
+                <field name="user_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_property_segmentation_form" model="ir.ui.view">
+        <field name="name">property.segmentation.form</field>
+        <field name="model">property.segmentation</field>
+        <field name="arch" type="xml">
+            <form string="Property Segment">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Cluster Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="cluster_id"/>
+                            <field name="size"/>
+                            <field name="description"/>
+                            <field name="message"/>
+                        </group>
+                        <group>
+                            <field name="property_count"/>
+                            <field name="user_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Demographics" name="demographics">
+                            <group>
+                                <group>
+                                    <field name="avg_age"/>
+                                    <field name="avg_favorites"/>
+                                    <field name="common_job"/>
+                                    <field name="common_country"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Property Preferences" name="property_preferences">
+                            <group>
+                                <group>
+                                    <field name="avg_favorited_area"/>
+                                    <field name="avg_favorited_bedrooms"/>
+                                    <field name="avg_favorited_price"/>
+                                    <field name="favorite_property_type"/>
+                                    <field name="favorite_city"/>
+                                    <field name="favorite_sale_rent"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Preferences" name="preferences">
+                            <group>
+                                <group>
+                                    <field name="furnished_preference"/>
+                                    <field name="sale_preference"/>
+                                    <field name="avg_installment_years"/>
+                                    <field name="avg_delivery_time"/>
+                                    <field name="preferred_finishing"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Properties" name="properties">
+                            <field name="property_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Users" name="users">
+                            <field name="user_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_property_segmentation_search" model="ir.ui.view">
+        <field name="name">property.segmentation.search</field>
+        <field name="model">property.segmentation</field>
+        <field name="arch" type="xml">
+            <search string="Search Segments">
+                <field name="name"/>
+                <field name="cluster_id"/>
+                <field name="favorite_property_type"/>
+                <field name="favorite_city"/>
+                <field name="common_country"/>
+                <group expand="0" string="Group By">
+                    <filter string="Property Type" name="group_by_property_type" context="{'group_by': 'favorite_property_type'}"/>
+                    <filter string="City" name="group_by_city" context="{'group_by': 'favorite_city'}"/>
+                    <filter string="Country" name="group_by_country" context="{'group_by': 'common_country'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_property_segmentation" model="ir.actions.act_window">
+        <field name="name">Property Segments</field>
+        <field name="res_model">property.segmentation</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first property segment!
+            </p>
+            <p>
+                Create segments to group properties and users for better organization and analysis.
+            </p>
+        </field>
+    </record>
+
+    <!-- Root Menu Item -->
+    <menuitem id="menu_property_segmentation_root"
+              name="Segmentation"
+              web_icon="feedback_module,static/description/icon.png"
+              sequence="56"
+              groups="base.group_user"/>
+
+    <!-- Submenu Item -->
+    <menuitem id="menu_property_segmentation"
+              name="Property Segments"
+              parent="menu_property_segmentation_root"
+              action="action_property_segmentation"
+              sequence="10"
+              groups="base.group_user"/>
+</odoo> 

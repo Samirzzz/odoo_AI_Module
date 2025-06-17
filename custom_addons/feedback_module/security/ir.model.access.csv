@@ -10,3 +10,4 @@ access_recommended_property_details,access.recommended.property.details,model_re
 access_feedback_call_log,feedback.call.log,model_feedback_call_log,base.group_user,1,1,1,1
 access_feedback_lead_questionnaire,feedback.lead.questionnaire,model_feedback_lead_questionnaire,base.group_user,1,1,1,1
 access_feedback_dashboard,feedback.dashboard,model_feedback_dashboard,base.group_user,1,1,1,1
+access_property_segmentation,access.property.segmentation,model_property_segmentation,base.group_user,1,1,1,1
