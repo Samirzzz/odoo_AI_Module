@@ -20,6 +20,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/menu_views.xml',
+        'views/feedback_views.xml',
         'views/call_log_views.xml',
         'views/lead_questionnaire_views.xml',
         'views/call_report_views.xml',

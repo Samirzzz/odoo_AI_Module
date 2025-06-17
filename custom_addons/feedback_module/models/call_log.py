@@ -36,7 +36,7 @@ class FeedbackCallLog(models.Model):
     inference_language    = fields.Char(readonly=True)
     inference_transcript  = fields.Text(readonly=True)
     inference_translation = fields.Text(readonly=True)
-    inference_rephrased   = fields.Text(readonly=True)
+    inference_rephrased   = fields.Html(string="Rephrased Text", readonly=True)
 
     is_processing         = fields.Boolean(default=False)
     llama_qna             = fields.Text()
@@ -110,6 +110,20 @@ class FeedbackCallLog(models.Model):
                 rec._process_audio_file()
         return res
 
+    def _to_html(self, text):
+        """Convert plain text to HTML format preserving line breaks."""
+        if not text:
+            return ""
+        # Split into paragraphs and wrap each in <p> tags
+        paragraphs = text.split('\n\n')
+        html = []
+        for p in paragraphs:
+            if p.strip():
+                # Convert single line breaks to <br>
+                p = p.replace('\n', '<br>')
+                html.append(f'<p>{p}</p>')
+        return '\n'.join(html)
+
     def _process_audio_file(self):
         """Process the audio file via external API without SSL verify."""
         self.ensure_one()
@@ -121,7 +135,7 @@ class FeedbackCallLog(models.Model):
         self.env.cr.commit()
 
         # API URL for transcription service
-        api_url = "http://6eba-34-125-187-1.ngrok-free.app/invocations"
+        api_url = "http://3cf7-34-125-28-60.ngrok-free.app/invocations"
         raw = base64.b64decode(self.call_recording)
         fname = self.recording_filename or "recording.wav"
         size_mb = len(raw) / (1024 * 1024)
@@ -131,6 +145,7 @@ class FeedbackCallLog(models.Model):
                 m = MultipartEncoder({
                     'emp_id': self.salesperson_id.name,
                     'file':   (fname, io.BytesIO(raw), 'audio/wav'),
+                    'output_format': 'html'  # Request HTML format from the API
                 })
                 headers = {'Content-Type': m.content_type}
                 resp = requests.post(
@@ -141,25 +156,34 @@ class FeedbackCallLog(models.Model):
                 resp = requests.post(
                     api_url,
                     files={'file': (fname, raw, 'audio/wav')},
-                    data={'emp_id': self.salesperson_id.name},
+                    data={
+                        'emp_id': self.salesperson_id.name,
+                        'output_format': 'html'  # Request HTML format from the API
+                    },
                     timeout=(10, 300),
                     allow_redirects=True,
                     verify=False,
                 )
             resp.raise_for_status()
             result = resp.json()
+            
+            # Convert plain text to HTML if needed
+            rephrased_text = result.get('final_rephrased_text', '')
+            if result.get('output_format') != 'html':
+                rephrased_text = self._to_html(rephrased_text)
+            
             self.write({
                 'inference_status':      result.get('status', 'error'),
                 'inference_language':    result.get('language', ''),
                 'inference_transcript':  result.get('transcription', ''),
                 'inference_translation': result.get('translation', ''),
-                'inference_rephrased':   result.get('final_rephrased_text', ''),
+                'inference_rephrased':   rephrased_text,
                 'is_processing':         False,
             })
             self.env.cr.commit()
             
             # Automatically generate Q&A if we have rephrased text
-            if result.get('status') == 'success' and result.get('final_rephrased_text'):
+            if result.get('status') == 'success' and rephrased_text:
                 self._generate_qna_from_rephrased()
                 
         except requests.exceptions.ConnectionError as e:
@@ -193,12 +217,71 @@ class FeedbackCallLog(models.Model):
             return
             
         prompt = (
-            "The following is a transcription of a phone call with a real-estate "
-            "client. Answer the twelve questions below in English **using ONLY "
-            "information that appears in the transcript**. If information is "
-            "missing, output the single word 'Unknown'.\n\n"
+            "The following is a transcription of a phone call between a real estate broker and a client. "
+            "Extract answers ONLY from the CLIENT's statements, ignoring the broker's questions and statements. "
+            "Answer the twelve questions below in English using ONLY information that the CLIENT explicitly stated. "
+            "If the client did not mention specific information, output 'Unknown'.\n\n"
             f"--- Transcription ---\n{self.inference_rephrased}\n"
             "--- End of Transcription ---\n\n"
+            "Important Instructions:\n"
+            "1. Only use information that was explicitly stated by the CLIENT\n"
+            "2. Ignore any information mentioned by the broker\n"
+            "3. If the client didn't mention something, use 'Unknown'\n"
+            "4. Do not infer or assume information not directly stated by the client\n"
+            "5. For meeting scheduling (Question 9):\n"
+            "   - If client agrees to a viewing but no specific date/time is mentioned, write 'Agreed to viewing'\n"
+            "   - If client mentions a specific date/time, include those details\n"
+            "   - If client declines or doesn't respond to viewing request, write 'Unknown'\n"
+            "6. For payment options (Question 4):\n"
+            "   - Answer 'No' if client explicitly states any of these:\n"
+            "     * 'I prefer cash'\n"
+            "     * 'I want to pay in cash'\n"
+            "     * 'Cash payment'\n"
+            "     * 'Full payment'\n"
+            "     * 'Pay in full'\n"
+            "     * 'Pay cash'\n"
+            "     * 'Pay the full amount'\n"
+            "   - Answer 'Yes' if client explicitly states any of these:\n"
+            "     * 'I prefer installments'\n"
+            "     * 'I want to pay in installments'\n"
+            "     * 'Monthly payments'\n"
+            "     * 'Payment plan'\n"
+            "     * 'Financing'\n"
+            "     * 'Pay in installments'\n"
+            "   - Answer 'Unknown' ONLY if client doesn't mention any payment preference\n"
+            "7. For finishing type (Question 12):\n"
+            "   - Answer 'Fully Furnished' if client mentions any of these:\n"
+            "     * 'Turnkey'\n"
+            "     * 'Key ready'\n"
+            "     * 'Key-ready'\n"
+            "     * 'Ready to move in'\n"
+            "     * 'Fully furnished'\n"
+            "     * 'Ready for immediate use'\n"
+            "     * 'Ready to use'\n"
+            "   - Answer 'Core' if client mentions any of these:\n"
+            "     * 'Semi-finished'\n"
+            "     * 'Core and Shell'\n"
+            "     * 'Core'\n"
+            "     * 'Basic structure'\n"
+            "     * 'Shell'\n"
+            "   - Answer 'Finished' if client mentions any of these:\n"
+            "     * 'Finished'\n"
+            "     * 'Fully finished'\n"
+            "     * 'Complete'\n"
+            "     * 'Ready'\n"
+            "     * 'Done'\n"
+            "   - Answer 'Unknown' ONLY if client doesn't mention any finishing type\n\n"
+            "Location Translation Rules:\n"
+            "- If a speaker mentions 'madinaty', translate it as 'Madinaty' (a city in Egypt)\n"
+            "- If a speaker mentions 'tagamo3' or 'tagamoa', translate it as 'New Cairo'\n"
+            "- If a speaker mentions 'zamalek', translate it as 'Zamalek' (a neighborhood in Cairo)\n"
+            "- If a speaker mentions 'maadi' or 'ma3adi', translate it as 'Maadi'\n"
+            "- If a speaker mentions 'nasr city', 'nasr', or 'madinet nasr', translate as 'Nasr City'\n"
+            "- If a speaker mentions '3asema', 'el 3asema', or '3asema el edarya', translate it as 'New Capital'\n"
+            "- If a speaker mentions 'sheikh zayed', translate it as 'Sheikh Zayed'\n"
+            "- If a speaker mentions '6 october' or '6th october', translate it as '6th of October City'\n"
+            "- If a speaker mentions 'heliopolis' or 'masr el gedida', translate it as 'Heliopolis'\n"
+            "- Maintain all other place names as contextually accurate Egyptian locations\n\n"
             "Questions:\n"
             "1. What type of property does the client want?\n"
             "2. How many rooms are preferred?\n"
@@ -213,20 +296,29 @@ class FeedbackCallLog(models.Model):
             "10. Down-payment percent or amount?\n"
             "11. Bathrooms required?\n"
             "12. Preferred finishing?\n\n"
-            "Format your answers EXACTLY as in this example (twelve lines, "
-            "number, dot, space, direct answer, nothing else):\n"
-            "1. Apartment\n"
-            "2. 3\n"
-            "3. 2000000\n"
-            "4. Yes\n"
-            "5. Gym, security, near monorail\n"
-            "6. 1.5\n"
-            "7. R8\n"
-            "8. Residential\n"
-            "9. Next Thursday\n"
-            "10. 10%\n"
-            "11. 2\n"
-            "12. Unknown"
+            "Format your answers as follows:\n"
+            "1. [Property type - e.g., Apartment, Villa, etc.]\n"
+            "2. [Number of bedrooms - numeric only]\n"
+            "3. [Budget in EGP - numeric only]\n"
+            "4. [Yes/No for installment preference - 'No' for cash, 'Yes' for installments]\n"
+            "5. [Comma-separated list of amenities]\n"
+            "6. [Number of years - numeric only]\n"
+            "7. [Location name - use standardized names from translation rules]\n"
+            "8. [Unit type - e.g., Residential, Commercial]\n"
+            "9. [Meeting status - 'Agreed to viewing' if client agreed but no date specified, specific date/time if mentioned, or 'Unknown']\n"
+            "10. [Down payment as number or percentage]\n"
+            "11. [Number of bathrooms - numeric only]\n"
+            "12. [Finishing type - 'Fully Furnished' for Turnkey/Key-ready, 'Core' for Semi-finished/Core and Shell, 'Finished' for Fully Finished, or 'Unknown']\n\n"
+            "Important:\n"
+            "- Use 'Unknown' if the client did not explicitly state the information\n"
+            "- For numeric answers (budget, rooms, years), provide only the number\n"
+            "- For amenities, list only those specifically mentioned by the client\n"
+            "- Keep answers concise and to the point\n"
+            "- Do not include any information that was only mentioned by the broker\n"
+            "- Always use standardized location names as per the translation rules\n"
+            "- For meeting scheduling, clearly indicate if client agreed to viewing even if no specific date was mentioned\n"
+            "- For finishing types, carefully check for all variations of key-ready, turnkey, and other finishing terms\n"
+            "- For payment options, carefully check for explicit statements about cash or installment preferences"
         )
         
         try:
@@ -239,12 +331,16 @@ class FeedbackCallLog(models.Model):
             for line in answers.splitlines():
                 line = line.strip()
                 if line and line[0].isdigit() and "." in line:
-                    answer_lines.append(line.split(".", 1)[1].strip())
+                    # Extract everything after the number and dot
+                    answer = line.split(".", 1)[1].strip()
+                    # Remove any square brackets or example text
+                    answer = re.sub(r'\[.*?\]', '', answer).strip()
+                    answer_lines.append(answer)
 
-            # Normalize and extract data for Pinecone search
+            # Normalize and extract data for search
             norm = self._normalize_and_extract(answer_lines)
 
-            # Build Pinecone filter
+            # Build search filters
             filters = {}
             if norm.get("max_price") is not None and norm.get("max_price") > 0:
                 filters["price"] = {"$lte": norm["max_price"]}
@@ -260,7 +356,7 @@ class FeedbackCallLog(models.Model):
             from .property_vector_search import PropertyVectorSearch
             search_service = PropertyVectorSearch(self.env)
             
-            # Get property recommendations using the existing search method
+            # Get property recommendations
             properties = search_service.search_properties(
                 query_text=query_text,
                 filters=filters,
@@ -354,21 +450,27 @@ class FeedbackCallLog(models.Model):
         normalized_data = self._normalize_and_extract(answers_from_llama)
         
         # Map normalized data to the fields expected by FeedbackLeadQuestionnaire
-        # Most keys should already match due to _normalize_and_extract structure
-        data.update(normalized_data) # This will overwrite initial defaults with parsed values
+        data.update(normalized_data)
 
-        # Logic for meeting_agreed and meeting_scheduled based on meeting_scheduled_info (Q9)
-        meeting_info = data.get('meeting_scheduled_info')
-        if meeting_info and str(meeting_info).lower() != 'unknown' and str(meeting_info).strip():
-            data['meeting_agreed'] = True 
-            data['meeting_scheduled'] = True 
+        # Enhanced meeting status handling
+        meeting_info = data.get('meeting_scheduled_info', '').lower()
+        if meeting_info:
+            if 'agreed to viewing' in meeting_info:
+                data['meeting_agreed'] = True
+                data['meeting_scheduled'] = False
+                data['meeting_scheduled_info'] = 'Agreed to viewing'
+            elif meeting_info != 'unknown':
+                data['meeting_agreed'] = True
+                data['meeting_scheduled'] = True
+                data['meeting_scheduled_info'] = meeting_info
+            else:
+                data['meeting_agreed'] = False
+                data['meeting_scheduled'] = False
+                data['meeting_scheduled_info'] = False
         else:
             data['meeting_agreed'] = False
             data['meeting_scheduled'] = False
-            data['meeting_scheduled_info'] = False # Clear if it was 'Unknown' or empty after normalization
-
-        # Ensure fields not in the 12 questions but present in the questionnaire model are handled if necessary
-        # e.g., data['area'] = ... if there's a way to infer it or set a default
+            data['meeting_scheduled_info'] = False
 
         _logger.info(f"Extracted questionnaire data: {data}")
         return data

@@ -70,6 +70,11 @@
                     class="btn-secondary oe_highlight"
                     icon="fa-solid fa-clipboard"/>
           </group>
+
+          <group string="Property Recommendations"
+                 modifiers="{'invisible': [('recommendation_results','=', False)]}">
+            <field name="recommendation_results" nolabel="1" readonly="1"/>
+          </group>
         </sheet>
         <footer>
           <button string="Save" name="action_save_and_stay" class="btn-primary" type="object"/>

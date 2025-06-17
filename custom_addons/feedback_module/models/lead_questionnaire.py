@@ -52,7 +52,7 @@ class FeedbackLeadQuestionnaire(models.Model):
     call_inference_language = fields.Char(related="call_log_id.inference_language", string="Detected Language", readonly=True)
     call_inference_transcript = fields.Text(related="call_log_id.inference_transcript", string="Transcription", readonly=True)
     call_inference_translation = fields.Text(related="call_log_id.inference_translation", string="Translation", readonly=True)
-    call_inference_rephrased = fields.Text(related="call_log_id.inference_rephrased", string="Rephrased Text", readonly=True)
+    call_inference_rephrased = fields.Html(related="call_log_id.inference_rephrased", string="Rephrased Text", readonly=True)
     
     @api.onchange('meeting_scheduled')
     def _onchange_meeting_scheduled(self):
