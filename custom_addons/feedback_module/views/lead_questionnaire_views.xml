@@ -144,9 +144,5 @@
   </record>
 
   <!-- Menu Item for Questionnaire -->
-  <menuitem id="menu_feedback_lead_questionnaire"
-            name="Client Questionnaires"
-            parent="menu_feedback_root"
-            action="action_feedback_lead_questionnaire"
-            sequence="20"/>
+  
 </odoo>

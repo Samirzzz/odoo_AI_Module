@@ -445,7 +445,7 @@ class FeedbackCallLog(models.Model):
             except ValueError:
                 _logger.warning(f"Could not parse Q&A line: {line_strip}")
                 continue
-
+                    
         # Use the same parsing logic as _normalize_and_extract for consistency
         normalized_data = self._normalize_and_extract(answers_from_llama)
         
@@ -503,7 +503,7 @@ class FeedbackCallLog(models.Model):
             # Optionally update existing questionnaire if desired
             questionnaire.write(questionnaire_data)
         
-        return {
+            return {
             'name': 'Client Questionnaire',
             'type': 'ir.actions.act_window',
             'res_model': 'feedback.lead.questionnaire',

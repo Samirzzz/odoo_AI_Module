@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Action Window for Recommended Properties -->
+  <record id="action_real_estate_recommendedproperty" model="ir.actions.act_window">
+    <field name="name">Recommended Properties</field>
+    <field name="res_model">real_estate_recommendedproperty</field>
+    <field name="view_mode">list,form</field>
+    <field name="target">current</field>
+  </record>
+
+  <!-- List View for Recommended Properties -->
+  <record id="view_real_estate_recommendedproperty_list" model="ir.ui.view">
+    <field name="name">real.estate.recommendedproperty.list</field>
+    <field name="model">real_estate_recommendedproperty</field>
+    <field name="arch" type="xml">
+      <list string="Recommended Properties">
+        <field name="user_id"/>
+        <field name="user_email"/>
+        <field name="overall_sentiment"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View for Recommended Properties -->
+  <record id="view_real_estate_recommendedproperty_form" model="ir.ui.view">
+    <field name="name">real.estate.recommendedproperty.form</field>
+    <field name="model">real_estate_recommendedproperty</field>
+    <field name="arch" type="xml">
+      <form string="Recommended Property">
+        <header>
+          <button string="Request Prediction" 
+                  name="action_request_prediction" 
+                  type="object"
+                  class="btn-primary"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+            <label for="user_id" class="oe_edit_only">Select User by Email</label>
+            <h1>
+              <field name="user_id" 
+                     options="{'no_create': True, 'no_open': True}"
+                     domain="[]"
+                     placeholder="Select User by Email"/>
+            </h1>
+            <h2>
+              <field name="user_email" readonly="1" invisible="not user_id"/>
+            </h2>
+          </div>
+          <group>
+            <group>
+              <field name="user_phone" readonly="1"/>
+              <field name="user_country" readonly="1"/>
+            </group>
+            <group>
+              <field name="user_job" readonly="1"/>
+            </group>
+          </group>
+          <group string="Latest Feedback" invisible="not user_id">
+            <field name="available_feedback_ids" invisible="1"/>
+            <field name="feedback_id" 
+                   domain="[('id', 'in', available_feedback_ids)]"
+                   options="{'no_create': True}"
+                   context="{'default_user_id': user_id}"/>
+            <field name="property_id" readonly="1"/>
+            <field name="feedback_text" readonly="1" widget="text"/>
+          </group>
+          <notebook>
+            <page string="Sentiment Analysis">
+              <group>
+                <group string="Overall">
+                  <field name="overall_sentiment"/>
+                  <field name="overall_confidence" widget="percentage"/>
+                </group>
+                <group string="Size">
+                  <field name="size_sentiment"/>
+                  <field name="size_confidence" widget="percentage"/>
+                </group>
+                <group string="Price">
+                  <field name="price_sentiment"/>
+                  <field name="price_confidence" widget="percentage"/>
+                </group>
+                <group string="Location">
+                  <field name="location_sentiment"/>
+                  <field name="location_confidence" widget="percentage"/>
+                </group>
+                <group string="Cleanliness">
+                  <field name="cleanliness_sentiment"/>
+                  <field name="cleanliness_confidence" widget="percentage"/>
+                </group>
+                <group string="Maintenance">
+                  <field name="maintenance_sentiment"/>
+                  <field name="maintenance_confidence" widget="percentage"/>
+                </group>
+                <group string="Amenities">
+                  <field name="amenities_sentiment"/>
+                  <field name="amenities_confidence" widget="percentage"/>
+                </group>
+              </group>
+            </page>
+            <page string="Extracted Entities">
+              <group>
+                <field name="extracted_size"/>
+                <field name="extracted_price"/>
+                <field name="extracted_location"/>
+                <field name="extracted_cleanliness"/>
+                <field name="extracted_maintenance"/>
+                <field name="extracted_amenities"/>
+              </group>
+            </page>
+            <page string="Recommended Properties">
+              <field name="recommended_property_details_ids">
+                <list editable="bottom">
+                  <field name="property_id"/>
+                  <field name="score" widget="percentage"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Menu Item for Recommended Properties -->
+  <menuitem id="menu_real_estate_recommendedproperty" 
+            name="Recommended Properties"
+            parent="menu_feedback_root"
+            action="action_real_estate_recommendedproperty" 
+            sequence="2"/>
+</odoo>

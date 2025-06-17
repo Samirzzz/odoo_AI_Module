@@ -54,15 +54,7 @@
     </record>
     
     <!-- Dashboard Menu -->
-    <menuitem id="menu_feedback_dashboard"
-              name="Dashboard"
-              parent="menu_feedback_root"
-              action="action_feedback_dashboard"
-              sequence="10"/>
-
+    
     <!-- Parent Menu for module -->
-    <menuitem id="menu_feedback_root"
-              name="Call Reports"
-              web_icon="feedback_module,static/description/icon.png"
-              sequence="55"/>
+    
 </odoo> 

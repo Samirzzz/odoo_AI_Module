@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Main Menu for module -->
+    <!-- Root Menu -->
     <menuitem id="menu_feedback_root"
-              name="Call Analysis"
-              web_icon="feedback_module,static/description/icon.png"
-              sequence="55"/>
-              
-    <!-- Submenu for Call Logs -->
-    <menuitem id="menu_feedback_call_logs"
-              name="Call Logs"
-              parent="menu_feedback_root"
-              action="action_feedback_call_log"
-              sequence="20"/>
-              
-    <!-- Submenu for Questionnaires -->
-    <menuitem id="menu_feedback_questionnaires"
-              name="Client Questionnaires"
-              parent="menu_feedback_root"
-              action="action_feedback_lead_questionnaire"
-              sequence="30"/>
+        name="Recommendations"
+        web_icon="feedback_module,static/description/icon.png"
+        sequence="10"/>
+
+    <!-- Call Reports Menu -->
+    <menuitem id="menu_call_reports"
+        name="Call Reports"
+        parent="menu_feedback_root"
+        action="action_call_reports"
+        sequence="10"/>
+
+    <!-- Feedback Management Root Menu -->
+    <menuitem id="menu_feedback_management_root"
+        name="Feedback Management"
+        web_icon="feedback_module,static/description/icon.png"
+        sequence="20"/>
+
+    <!-- Recommendations Menu -->
+    <menuitem id="menu_real_estate_recommendedproperty"
+        name="Recommendations"
+        parent="menu_feedback_management_root"
+        action="action_real_estate_recommendedproperty"
+        sequence="10"/>
 </odoo> 
