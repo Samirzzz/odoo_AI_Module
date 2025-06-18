@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- List View -->
-    <record id="view_property_segmentation_list" model="ir.ui.view">
-        <field name="name">property.segmentation.list</field>
-        <field name="model">property.segmentation</field>
+    <record id="view_real_estate_clusters_list" model="ir.ui.view">
+        <field name="name">real.estate.clusters.list</field>
+        <field name="model">real.estate.clusters</field>
         <field name="arch" type="xml">
-            <list string="Property Segments">
+            <list string="Real Estate Clusters">
                 <field name="cluster_id"/>
                 <field name="name"/>
                 <field name="size"/>
@@ -19,11 +19,11 @@
     </record>
 
     <!-- Form View -->
-    <record id="view_property_segmentation_form" model="ir.ui.view">
-        <field name="name">property.segmentation.form</field>
-        <field name="model">property.segmentation</field>
+    <record id="view_real_estate_clusters_form" model="ir.ui.view">
+        <field name="name">real.estate.clusters.form</field>
+        <field name="model">real.estate.clusters</field>
         <field name="arch" type="xml">
-            <form string="Property Segment">
+            <form string="Real Estate Cluster">
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -89,11 +89,11 @@
     </record>
 
     <!-- Search View -->
-    <record id="view_property_segmentation_search" model="ir.ui.view">
-        <field name="name">property.segmentation.search</field>
-        <field name="model">property.segmentation</field>
+    <record id="view_real_estate_clusters_search" model="ir.ui.view">
+        <field name="name">real.estate.clusters.search</field>
+        <field name="model">real.estate.clusters</field>
         <field name="arch" type="xml">
-            <search string="Search Segments">
+            <search string="Search Clusters">
                 <field name="name"/>
                 <field name="cluster_id"/>
                 <field name="favorite_property_type"/>
@@ -109,32 +109,25 @@
     </record>
 
     <!-- Action -->
-    <record id="action_property_segmentation" model="ir.actions.act_window">
-        <field name="name">Property Segments</field>
-        <field name="res_model">property.segmentation</field>
+    <record id="action_real_estate_clusters" model="ir.actions.act_window">
+        <field name="name">Real Estate Clusters</field>
+        <field name="res_model">real.estate.clusters</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first property segment!
+                Create your first real estate cluster!
             </p>
             <p>
-                Create segments to group properties and users for better organization and analysis.
+                Create clusters to group properties and users for better organization and analysis.
             </p>
         </field>
     </record>
 
-    <!-- Root Menu Item -->
-    <menuitem id="menu_property_segmentation_root"
-              name="Segmentation"
-              web_icon="feedback_module,static/description/icon.png"
-              sequence="56"
-              groups="base.group_user"/>
-
-    <!-- Submenu Item -->
-    <menuitem id="menu_property_segmentation"
-              name="Property Segments"
-              parent="menu_property_segmentation_root"
-              action="action_property_segmentation"
-              sequence="10"
+    <!-- Menu Item -->
+    <menuitem id="menu_real_estate_clusters"
+              name="Clusters"
+              parent="menu_feedback_root"
+              action="action_real_estate_clusters"
+              sequence="2"
               groups="base.group_user"/>
 </odoo> 

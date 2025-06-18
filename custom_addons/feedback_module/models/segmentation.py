@@ -1,8 +1,8 @@
 from odoo import models, fields, api
 
-class PropertySegmentation(models.Model):
-    _name = 'property.segmentation'
-    _description = 'Property Segmentation'
+class RealEstateClusters(models.Model):
+    _name = 'real.estate.clusters'
+    _description = 'Real Estate Clusters'
     _rec_name = 'name'
 
     cluster_id = fields.Integer(string='Cluster ID', required=True)

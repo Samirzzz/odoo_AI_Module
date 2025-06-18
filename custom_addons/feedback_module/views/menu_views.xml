@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Root Menu -->
+    <!-- Main Menu -->
     <menuitem id="menu_feedback_root"
-        name="Recommendations"
-        web_icon="feedback_module,static/description/icon.png"
-        sequence="10"/>
-
-    <!-- Call Reports Menu -->
-    <menuitem id="menu_call_reports"
-        name="Call Reports"
-        parent="menu_feedback_root"
-        action="action_call_reports"
-        sequence="10"/>
-
-    <!-- Feedback Management Root Menu -->
-    <menuitem id="menu_feedback_management_root"
-        name="Feedback Management"
-        web_icon="feedback_module,static/description/icon.png"
-        sequence="20"/>
+              name="Real Estate"
+              sequence="10"/>
 
     <!-- Recommendations Menu -->
     <menuitem id="menu_real_estate_recommendedproperty"
-        name="Recommendations"
-        parent="menu_feedback_management_root"
-        action="action_real_estate_recommendedproperty"
-        sequence="10"/>
+              name="Recommendations"
+              parent="menu_feedback_root"
+              action="action_real_estate_recommendedproperty"
+              sequence="1"/>
+
+    <!-- Clusters Menu -->
+    <menuitem id="menu_real_estate_clusters"
+              name="Clusters"
+              parent="menu_feedback_root"
+              action="action_real_estate_clusters"
+              sequence="2"/>
 </odoo> 
