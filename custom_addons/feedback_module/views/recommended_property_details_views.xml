@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- List View for real_estate_recommendedpropertiesdetails -->
+        <record id="view_recommended_properties_details_list" model="ir.ui.view">
+            <field name="name">real.estate.recommendedpropertiesdetails.list</field>
+            <field name="model">real_estate_recommendedpropertiesdetails</field>
+            <field name="arch" type="xml">
+                <list string="Recommended Details">
+                    <field name="recommendation_id"/>
+                    <field name="property_id"/>
+                    <field name="score"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View for real_estate_recommendedpropertiesdetails -->
+        <record id="view_recommended_properties_details_form" model="ir.ui.view">
+            <field name="name">real.estate.recommendedpropertiesdetails.form</field>
+            <field name="model">real_estate_recommendedpropertiesdetails</field>
+            <field name="arch" type="xml">
+                <form string="Recommended Detail">
+                    <sheet>
+                        <group>
+                            <field name="recommendation_id"/>
+                            <field name="property_id"/>
+                            <field name="score"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for real_estate_recommendedpropertiesdetails -->
+        <record id="action_recommended_properties_details" model="ir.actions.act_window">
+            <field name="name">Recommended Details</field>
+            <field name="res_model">real_estate_recommendedpropertiesdetails</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Menu Item under Real Estate -->
+        <menuitem id="menu_recommended_properties_details"
+                  name="Recommended Details"
+                  parent="menu_property_root"
+                  action="action_recommended_properties_details"
+                  sequence="30"/>
+
+    </data>
+</odoo> 

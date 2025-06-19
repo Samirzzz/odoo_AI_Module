@@ -48,4 +48,10 @@
 
   <!-- Backend Menu for Feedbacks -->
   <menuitem id="menu_feedback_management_root" name="Feedback Management" sequence="20"/>
+  
+  <menuitem id="menu_feedback_listing"
+            name="All Feedbacks"
+            parent="menu_feedback_management_root"
+            action="action_feedback"
+            sequence="10"/>
 </odoo>

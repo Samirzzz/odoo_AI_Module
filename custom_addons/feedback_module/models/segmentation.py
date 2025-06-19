@@ -5,7 +5,6 @@ class RealEstateClusters(models.Model):
     _description = 'Real Estate Clusters'
     _rec_name = 'name'
 
-    cluster_id = fields.Integer(string='Cluster ID', required=True)
     name = fields.Char(string='Cluster Name', required=True)
     description = fields.Text(string='Description')
     message = fields.Text(string='Message')
@@ -36,6 +35,12 @@ class RealEstateClusters(models.Model):
     property_ids = fields.Many2many('real.estate.property', string='Properties')
     user_ids = fields.Many2many('res.users', string='Users')
     
+    recommended_details_ids = fields.Many2many(
+        comodel_name='real_estate_recommendedpropertiesdetails',
+        compute='_compute_recommended_details',
+        string='Recommended Property Details'
+    )
+
     # Computed fields
     property_count = fields.Integer(string='Number of Properties', compute='_compute_counts')
     user_count = fields.Integer(string='Number of Users', compute='_compute_counts')
@@ -44,4 +49,15 @@ class RealEstateClusters(models.Model):
     def _compute_counts(self):
         for record in self:
             record.property_count = len(record.property_ids)
-            record.user_count = len(record.user_ids) 
+            record.user_count = len(record.user_ids)
+
+    def _compute_recommended_details(self):
+        for cluster in self:
+            properties_in_cluster = self.env['real.estate.property'].search([('cluster_id', '=', cluster.id)])
+            if properties_in_cluster:
+                details = self.env['real_estate_recommendedpropertiesdetails'].search([
+                    ('property_id', 'in', properties_in_cluster.ids)
+                ])
+                cluster.recommended_details_ids = [(6, 0, details.ids)]
+            else:
+                cluster.recommended_details_ids = False 

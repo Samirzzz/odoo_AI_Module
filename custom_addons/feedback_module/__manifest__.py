@@ -19,6 +19,7 @@
 
     'data': [
         'security/ir.model.access.csv',
+        'views/import_excel_views.xml',
         'views/menu_views.xml',
         'views/feedback_views.xml',
         'views/call_log_views.xml',
@@ -26,8 +27,10 @@
         'views/call_report_views.xml',
         'views/dashboard_view.xml',
         'views/res_config_settings_view.xml',
-        'views/real_estate_recommendedproperty_views.xml',
         'views/segmentation_views.xml',
+        'views/property_views.xml',
+        'views/real_estate_recommendedproperty_views.xml',
+        'views/recommended_property_details_views.xml',
     ],
     
     "installable": True,

@@ -36,6 +36,8 @@ class Users(models.Model):
     token = fields.Char(string='Token')
     password = fields.Char(string='Password')
     
+    cluster_id = fields.Many2one('real.estate.clusters', string='Cluster')
+    
     # One2many field linking to recommended properties
     real_estate_recommendedproperty_ids = fields.One2many(
         'real_estate_recommendedproperty',

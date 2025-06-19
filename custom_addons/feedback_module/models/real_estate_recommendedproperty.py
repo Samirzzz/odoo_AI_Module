@@ -27,7 +27,7 @@ class RealEstateRecommendedProperty(models.Model):
     )
 
     recommended_property_details_ids = fields.One2many(
-        'recommended.property.details',
+        'real_estate_recommendedpropertiesdetails',
         'recommendation_id',
         string='Recommended Property Details'
     )
@@ -101,7 +101,7 @@ class RealEstateRecommendedProperty(models.Model):
         if not property_obj:
             raise UserError(_("The selected property does not exist."))
 
-        return self.env['recommended.property.details'].create({
+        return self.env['real_estate_recommendedpropertiesdetails'].create({
             'recommendation_id': self.id,
             'property_id': property_id,
             'score': score,
@@ -177,11 +177,3 @@ class RealEstateRecommendedProperty(models.Model):
             
         except requests.exceptions.RequestException as e:
             raise UserError(f"Error making API request: {str(e)}")
-
-class RecommendedPropertyDetails(models.Model):
-    _name = 'recommended.property.details'
-    _description = 'Recommended Property Details'
-
-    recommendation_id = fields.Many2one('real_estate_recommendedproperty', string='Recommendation')
-    property_id = fields.Many2one('real.estate.property', string='Property')
-    score = fields.Float(string='Score')

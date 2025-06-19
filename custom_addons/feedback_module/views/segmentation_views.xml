@@ -6,7 +6,7 @@
         <field name="model">real.estate.clusters</field>
         <field name="arch" type="xml">
             <list string="Real Estate Clusters">
-                <field name="cluster_id"/>
+                <field name="id"/>
                 <field name="name"/>
                 <field name="size"/>
                 <field name="favorite_property_type"/>
@@ -32,7 +32,6 @@
                     </div>
                     <group>
                         <group>
-                            <field name="cluster_id"/>
                             <field name="size"/>
                             <field name="description"/>
                             <field name="message"/>
@@ -82,6 +81,15 @@
                         <page string="Users" name="users">
                             <field name="user_ids" widget="many2many_tags"/>
                         </page>
+                        <page string="Recommendations" name="recommendations">
+                            <field name="recommended_details_ids" readonly="1">
+                                <list>
+                                    <field name="recommendation_id"/>
+                                    <field name="property_id"/>
+                                    <field name="score"/>
+                                </list>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -95,7 +103,6 @@
         <field name="arch" type="xml">
             <search string="Search Clusters">
                 <field name="name"/>
-                <field name="cluster_id"/>
                 <field name="favorite_property_type"/>
                 <field name="favorite_city"/>
                 <field name="common_country"/>

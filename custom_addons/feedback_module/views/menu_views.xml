@@ -2,15 +2,15 @@
 <odoo>
     <!-- Main Menu -->
     <menuitem id="menu_feedback_root"
-              name="Real Estate"
+              name="Feedback"
               sequence="10"/>
 
     <!-- Recommendations Menu -->
-    <menuitem id="menu_real_estate_recommendedproperty"
+    <!-- <menuitem id="menu_real_estate_recommendedproperty"
               name="Recommendations"
               parent="menu_feedback_root"
               action="action_real_estate_recommendedproperty"
-              sequence="1"/>
+              sequence="1"/> -->
 
     <!-- Clusters Menu -->
     <menuitem id="menu_real_estate_clusters"
@@ -18,4 +18,16 @@
               parent="menu_feedback_root"
               action="action_real_estate_clusters"
               sequence="2"/>
+
+    <menuitem id="menu_feedback_import_users" 
+              name="Import Users"
+              parent="menu_feedback_root" 
+              action="action_import_users_excel"
+              sequence="100"/>
+              
+    <menuitem id="menu_feedback_import_feedback" 
+              name="Import Feedback"
+              parent="menu_feedback_root" 
+              action="action_import_feedback_excel"
+              sequence="101"/>
 </odoo> 

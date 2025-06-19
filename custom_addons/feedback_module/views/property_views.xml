@@ -1,62 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Property Action -->
-    <record id="action_real_estate_property" model="ir.actions.act_window">
-        <field name="name">Properties</field>
-        <field name="res_model">real.estate.property</field>
-        <field name="view_mode">list,form</field>
-    </record>
+    <data>
 
-    <!-- Property List View -->
-    <record id="view_real_estate_property_list" model="ir.ui.view">
-        <field name="name">real.estate.property.list</field>
-        <field name="model">real.estate.property</field>
-        <field name="arch" type="xml">
-            <list string="Properties">
-                <field name="name"/>
-                <field name="type"/>
-                <field name="price"/>
-                <field name="bedrooms"/>
-                <field name="bathrooms"/>
-                <field name="area"/>
-                <field name="city"/>
-                <field name="status"/>
-                <field name="sale_rent"/>
-            </list>
-        </field>
-    </record>
+        <!-- Tree View for real.estate.property -->
+        <record id="view_property_tree" model="ir.ui.view">
+            <field name="name">real.estate.property.tree</field>
+            <field name="model">real.estate.property</field>
+            <field name="arch" type="xml">
+                <list string="Properties">
+                    <field name="name"/>
+                    <field name="price"/>
+                    <field name="bedrooms"/>
+                    <field name="city"/>
+                    <field name="status"/>
+                    <field name="cluster_id"/>
+                </list>
+            </field>
+        </record>
 
-    <!-- Property Form View -->
-    <record id="view_real_estate_property_form" model="ir.ui.view">
-        <field name="name">real.estate.property.form</field>
-        <field name="model">real.estate.property</field>
-        <field name="arch" type="xml">
-            <form string="Property">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="type"/>
-                        <field name="price"/>
-                        <field name="bedrooms"/>
-                        <field name="bathrooms"/>
-                        <field name="area"/>
-                        <field name="furnished"/>
-                        <field name="level"/>
-                        <field name="compound"/>
-                        <field name="payment_option"/>
-                        <field name="city"/>
-                        <field name="img_url"/>
-                        <!-- Changed from customer_id to user_id -->
-                        <field name="user_id"/>
-                        <field name="status"/>
-                        <field name="sale_rent"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+        <!-- Form View for real.estate.property -->
+        <record id="view_property_form" model="ir.ui.view">
+            <field name="name">real.estate.property.form</field>
+            <field name="model">real.estate.property</field>
+            <field name="arch" type="xml">
+                <form string="Property">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="price"/>
+                            <field name="bedrooms"/>
+                            <field name="bathrooms"/>
+                            <field name="area"/>
+                            <field name="city"/>
+                            <field name="cluster_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-    <!-- Menu -->
-    <menuitem id="menu_real_estate_root" name="Real Estate"/>
-    <menuitem id="menu_real_estate_properties" name="Properties" parent="menu_real_estate_root" action="action_real_estate_property"/>
+        <!-- Action for real.estate.property -->
+        <record id="action_property" model="ir.actions.act_window">
+            <field name="name">Properties</field>
+            <field name="res_model">real.estate.property</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Menu Item -->
+        <!-- This will be a top-level menu item. You can change the parent to place it elsewhere. -->
+        <menuitem id="menu_property_root" name="Real Estate" sequence="10"/>
+        
+        <menuitem id="menu_property_listings" name="Properties" parent="menu_property_root" action="action_property" sequence="10"/>
+
+    </data>
 </odoo>
