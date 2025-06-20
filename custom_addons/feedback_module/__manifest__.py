@@ -19,6 +19,7 @@
 
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
         'views/import_excel_views.xml',
         'views/menu_views.xml',
         'views/feedback_views.xml',

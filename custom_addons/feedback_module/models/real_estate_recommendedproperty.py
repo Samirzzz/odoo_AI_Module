@@ -17,7 +17,6 @@ class RealEstateRecommendedProperty(models.Model):
     # Feedback fields
     feedback_id = fields.Many2one('real.estate.feedback', string='Selected Feedback')
     feedback_text = fields.Text(related='feedback_id.feedback', string='Feedback Text', readonly=True)
-    property_id = fields.Many2one(related='feedback_id.property_id', string='Property', readonly=True)
 
     # Add a computed field to show all feedbacks for this user
     available_feedback_ids = fields.Many2many(
@@ -25,6 +24,8 @@ class RealEstateRecommendedProperty(models.Model):
         compute='_compute_available_feedbacks',
         string='Available Feedbacks'
     )
+
+    property_id = fields.Many2one('real.estate.property', string='Property')
 
     recommended_property_details_ids = fields.One2many(
         'real_estate_recommendedpropertiesdetails',
@@ -49,12 +50,12 @@ class RealEstateRecommendedProperty(models.Model):
     amenities_confidence = fields.Float(string='Amenities Confidence', readonly=True)
 
     # Extracted Entities Fields
-    extracted_size = fields.Char(string='Extracted Size', readonly=True)
-    extracted_price = fields.Char(string='Extracted Price', readonly=True)
-    extracted_location = fields.Char(string='Extracted Location', readonly=True)
-    extracted_cleanliness = fields.Char(string='Extracted Cleanliness', readonly=True)
-    extracted_maintenance = fields.Char(string='Extracted Maintenance', readonly=True)
-    extracted_amenities = fields.Char(string='Extracted Amenities', readonly=True)
+    size_text = fields.Char(string='Extracted Size', readonly=True)
+    price_text = fields.Char(string='Extracted Price', readonly=True)
+    location_text = fields.Char(string='Extracted Location', readonly=True)
+    cleanliness_text = fields.Char(string='Extracted Cleanliness', readonly=True)
+    maintenance_text = fields.Char(string='Extracted Maintenance', readonly=True)
+    amenities_text = fields.Char(string='Extracted Amenities', readonly=True)
 
     @api.depends('user_id')
     def _compute_available_feedbacks(self):
@@ -149,14 +150,14 @@ class RealEstateRecommendedProperty(models.Model):
             })
 
             # Update extracted entities fields
-            entities = result.get('extracted_entities', {})
+            entities = result.get('entities', {})
             self.write({
-                'extracted_size': entities.get('size', 'N/A'),
-                'extracted_price': entities.get('price', 'N/A'),
-                'extracted_location': entities.get('location', 'N/A'),
-                'extracted_cleanliness': entities.get('cleanliness', 'N/A'),
-                'extracted_maintenance': entities.get('maintenance', 'N/A'),
-                'extracted_amenities': entities.get('amenities', 'N/A'),
+                'size_text': entities.get('size', 'N/A'),
+                'price_text': entities.get('price', 'N/A'),
+                'location_text': entities.get('location', 'N/A'),
+                'cleanliness_text': entities.get('cleanliness', 'N/A'),
+                'maintenance_text': entities.get('maintenance', 'N/A'),
+                'amenities_text': entities.get('amenities', 'N/A'),
             })
 
             # Create or update recommended properties

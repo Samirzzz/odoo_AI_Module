@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for feedback.lead.questionnaire -->
+        <record id="seq_feedback_lead_questionnaire" model="ir.sequence">
+            <field name="name">Feedback Lead Questionnaire</field>
+            <field name="code">feedback.lead.questionnaire</field>
+            <field name="prefix">Q-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo> 

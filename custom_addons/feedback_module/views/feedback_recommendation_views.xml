@@ -53,6 +53,7 @@
             </group>
             <group>
               <field name="user_job" readonly="1"/>
+              <field name="property_id"/>
             </group>
           </group>
           <group string="Latest Feedback" invisible="not user_id">
@@ -61,7 +62,6 @@
                    domain="[('id', 'in', available_feedback_ids)]"
                    options="{'no_create': True}"
                    context="{'default_user_id': user_id}"/>
-            <field name="property_id" readonly="1"/>
             <field name="feedback_text" readonly="1" widget="text"/>
           </group>
           <notebook>
@@ -99,12 +99,12 @@
             </page>
             <page string="Extracted Entities">
               <group>
-                <field name="extracted_size"/>
-                <field name="extracted_price"/>
-                <field name="extracted_location"/>
-                <field name="extracted_cleanliness"/>
-                <field name="extracted_maintenance"/>
-                <field name="extracted_amenities"/>
+                <field name="size_text"/>
+                <field name="price_text"/>
+                <field name="location_text"/>
+                <field name="cleanliness_text"/>
+                <field name="maintenance_text"/>
+                <field name="amenities_text"/>
               </group>
             </page>
             <page string="Recommended Properties">
