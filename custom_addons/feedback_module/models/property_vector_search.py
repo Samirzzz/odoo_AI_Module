@@ -27,7 +27,7 @@ class PropertyVectorSearch:
             
             # Make the API request
             response = requests.post(
-                'http://localhost:8002/search',
+                'http://localhost:8016/search',
                 json=request_data,
                 headers={'Content-Type': 'application/json'}
             )

@@ -8,6 +8,47 @@ class RealEstateRecommendedProperties(models.Model):
     user_id = fields.Many2one('users.users', string='User', required=True, ondelete='cascade')
     created_at = fields.Datetime(string='Created At', default=fields.Datetime.now)
     recommendation_type = fields.Char(string='Recommendation Type', size=255)
+    review_number = fields.Integer(string='Review Number')
+    review_text = fields.Text(string='Review Text')
+    
+    # Review processing fields
+    original_review = fields.Text(string='Original Review')
+    translated_review = fields.Text(string='Translated Review')
+    processed_review = fields.Text(string='Processed Review')
+    
+    # Sentiment analysis fields
+    overall_sentiment = fields.Char(string='Overall Sentiment')
+    overall_confidence = fields.Float(string='Overall Confidence')
+    size_sentiment = fields.Char(string='Size Sentiment')
+    size_confidence = fields.Float(string='Size Confidence')
+    price_sentiment = fields.Char(string='Price Sentiment')
+    price_confidence = fields.Float(string='Price Confidence')
+    location_sentiment = fields.Char(string='Location Sentiment')
+    location_confidence = fields.Float(string='Location Confidence')
+    cleanliness_sentiment = fields.Char(string='Cleanliness Sentiment')
+    cleanliness_confidence = fields.Float(string='Cleanliness Confidence')
+    maintenance_sentiment = fields.Char(string='Maintenance Sentiment')
+    maintenance_confidence = fields.Float(string='Maintenance Confidence')
+    amenities_sentiment = fields.Char(string='Amenities Sentiment')
+    amenities_confidence = fields.Float(string='Amenities Confidence')
+    text_sentiment = fields.Char(string='Text Sentiment')
+    text_confidence = fields.Float(string='Text Confidence')
+    
+    # Extracted entities fields
+    size_text = fields.Char(string='Size Text')
+    price_text = fields.Char(string='Price Text')
+    location_text = fields.Char(string='Location Text')
+    cleanliness_text = fields.Char(string='Cleanliness Text')
+    maintenance_text = fields.Char(string='Maintenance Text')
+    amenities_text = fields.Char(string='Amenities Text')
+    entities_text = fields.Text(string='Entities Text')
+    
+    # Property details fields
+    price = fields.Float(string='Price')
+    size = fields.Float(string='Size')
+    city = fields.Char(string='City')
+    sale_rent = fields.Char(string='Sale/Rent')
+    payment_type = fields.Char(string='Payment Type')
 
     details_ids = fields.One2many(
         comodel_name='real_estate_recommendedpropertiesdetails',
@@ -52,7 +93,7 @@ class RealEstateRecommendedPropertiesDetails(models.Model):
     _name = 'real_estate_recommendedpropertiesdetails'
     _description = 'Real Estate Recommended Properties Details'
 
-    recommendation_id = fields.Many2one('real_estate_recommendedproperties', string='Recommendation', required=True, ondelete='cascade')
+    recommendation_id = fields.Many2one('real_estate_recommendedproperty', string='Recommendation', required=True, ondelete='cascade')
     property_id = fields.Many2one('real.estate.property', string='Property', required=True, ondelete='cascade')
     score = fields.Float(string='Score')
 

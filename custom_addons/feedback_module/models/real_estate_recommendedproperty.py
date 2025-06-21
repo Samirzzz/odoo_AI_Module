@@ -17,7 +17,8 @@ class RealEstateRecommendedProperty(models.Model):
     # Feedback fields
     feedback_id = fields.Many2one('real.estate.feedback', string='Selected Feedback')
     feedback_text = fields.Text(related='feedback_id.feedback', string='Feedback Text', readonly=True)
-
+    review_number = fields.Integer(string='Review Number')
+    review_text = fields.Text(string='Review Text')
     # Add a computed field to show all feedbacks for this user
     available_feedback_ids = fields.Many2many(
         'real.estate.feedback',
@@ -68,6 +69,14 @@ class RealEstateRecommendedProperty(models.Model):
             else:
                 record.available_feedback_ids = False
 
+    @api.onchange('feedback_id')
+    def _onchange_feedback_id(self):
+        """When feedback changes, automatically update the property"""
+        if self.feedback_id and self.feedback_id.property_id:
+            self.property_id = self.feedback_id.property_id
+        else:
+            self.property_id = False
+
     @api.onchange('user_id')
     def _onchange_user_id(self):
         """When user changes, automatically select their most recent feedback"""
@@ -116,14 +125,17 @@ class RealEstateRecommendedProperty(models.Model):
         if not self.feedback_id:
             raise UserError(_("No feedback found for this user."))
 
+        # if not self.property_id:
+        #     raise UserError(_("Please select a property first."))
+
         try:
-            url = "https://preprocessmodel.fly.dev/predict"
+            url = "http://192.168.100.186:8000/predict"
             headers = {'Content-Type': 'application/json'}
             data = {
                 "review": self.feedback_text or "",
                 "property_id": self.property_id.id if self.property_id else None,
                 "user_id": str(self.user_id.id),
-                "review_number": 1
+                "review_number": 1,
             }
             
             response = requests.post(url, headers=headers, data=json.dumps(data))
@@ -150,7 +162,7 @@ class RealEstateRecommendedProperty(models.Model):
             })
 
             # Update extracted entities fields
-            entities = result.get('entities', {})
+            entities = result.get('extracted_entities', {})
             self.write({
                 'size_text': entities.get('size', 'N/A'),
                 'price_text': entities.get('price', 'N/A'),
