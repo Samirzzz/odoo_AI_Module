@@ -31,10 +31,6 @@ class Users(models.Model):
     job = fields.Char(string='Job')
     dob = fields.Date(string='Date of Birth')
     role = fields.Char(string='Role')
-    total_time_spent = fields.Float(string='Total Time Spent')
-    idd = fields.Char(string='IDD')
-    token = fields.Char(string='Token')
-    password = fields.Char(string='Password')
     
     cluster_id = fields.Many2one('real.estate.clusters', string='Cluster')
     

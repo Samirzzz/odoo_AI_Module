@@ -12,8 +12,23 @@
                 <field name="favorite_property_type"/>
                 <field name="favorite_city"/>
                 <field name="avg_favorited_price"/>
-                <field name="property_count"/>
                 <field name="user_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- List view for users inside the cluster form -->
+    <record id="view_users_users_list_in_cluster" model="ir.ui.view">
+        <field name="name">users.users.list.in.cluster</field>
+        <field name="model">users.users</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="country"/>
+                <field name="job"/>
+                <field name="dob"/>
             </list>
         </field>
     </record>
@@ -37,7 +52,6 @@
                             <field name="message"/>
                         </group>
                         <group>
-                            <field name="property_count"/>
                             <field name="user_count"/>
                         </group>
                     </group>
@@ -75,21 +89,11 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="Properties" name="properties">
-                            <field name="property_ids" widget="many2many_tags"/>
-                        </page>
+                        
                         <page string="Users" name="users">
-                            <field name="user_ids" widget="many2many_tags"/>
+                            <field name="user_ids"/>
                         </page>
-                        <page string="Recommendations" name="recommendations">
-                            <field name="recommended_details_ids" readonly="1">
-                                <list>
-                                    <field name="recommendation_id"/>
-                                    <field name="property_id"/>
-                                    <field name="score"/>
-                                </list>
-                            </field>
-                        </page>
+                      
                     </notebook>
                 </sheet>
             </form>

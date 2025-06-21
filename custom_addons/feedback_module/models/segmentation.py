@@ -33,7 +33,7 @@ class RealEstateClusters(models.Model):
     
     # Related fields
     property_ids = fields.Many2many('real.estate.property', string='Properties')
-    user_ids = fields.Many2many('res.users', string='Users')
+    user_ids = fields.One2many('users.users', 'cluster_id', string='Users')
     
     recommended_details_ids = fields.Many2many(
         comodel_name='real_estate_recommendedpropertiesdetails',
@@ -42,13 +42,11 @@ class RealEstateClusters(models.Model):
     )
 
     # Computed fields
-    property_count = fields.Integer(string='Number of Properties', compute='_compute_counts')
     user_count = fields.Integer(string='Number of Users', compute='_compute_counts')
     
-    @api.depends('property_ids', 'user_ids')
+    @api.depends('user_ids')
     def _compute_counts(self):
         for record in self:
-            record.property_count = len(record.property_ids)
             record.user_count = len(record.user_ids)
 
     def _compute_recommended_details(self):

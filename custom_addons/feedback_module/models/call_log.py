@@ -135,7 +135,7 @@ class FeedbackCallLog(models.Model):
         self.env.cr.commit()
 
         # API URL for transcription service
-        api_url = "http://63e2-34-125-21-13.ngrok-free.app/invocations"
+        api_url = "http://a179-34-125-21-13.ngrok-free.app/invocations"
         raw = base64.b64decode(self.call_recording)
         fname = self.recording_filename or "recording.wav"
         size_mb = len(raw) / (1024 * 1024)
@@ -285,30 +285,32 @@ class FeedbackCallLog(models.Model):
             "Questions:\n"
             "1. What type of property does the client want?\n"
             "2. How many rooms are preferred?\n"
-            "3. What is the client's maximum budget? (numbers only – e.g. "
+            "3. What is the desired area in square meters?\n"
+            "4. What is the client's maximum budget? (numbers only – e.g. "
             "'2 million' → 2000000)\n"
-            "4. Does the client prefer installment plans? (Yes/No)\n"
-            "5. What amenities does the client require?\n"
-            "6. When does the client want to get the property in years?\n"
-            "7. Preferred location?\n"
-            "8. Unit type?\n"
-            "9. Was a meeting scheduled (date/time)?\n"
-            "10. Down-payment percent or amount?\n"
-            "11. Bathrooms required?\n"
-            "12. Preferred finishing?\n\n"
+            "5. Does the client prefer installment plans? (Yes/No)\n"
+            "6. What amenities does the client require?\n"
+            "7. When does the client want to get the property in years?\n"
+            "8. Preferred location?\n"
+            "9. Unit type?\n"
+            "10. Was a meeting scheduled (date/time)?\n"
+            "11. Down-payment percent or amount?\n"
+            "12. Bathrooms required?\n"
+            "13. Preferred finishing?\n\n"
             "Format your answers as follows:\n"
             "1. [Property type - e.g., Apartment, Villa, etc.]\n"
             "2. [Number of bedrooms - numeric only]\n"
-            "3. [Budget in EGP - numeric only]\n"
-            "4. [Yes/No for installment preference - 'No' for cash, 'Yes' for installments]\n"
-            "5. [Comma-separated list of amenities]\n"
-            "6. [Number of years - numeric only]\n"
-            "7. [Location name - use standardized names from translation rules]\n"
-            "8. [Unit type - e.g., Residential, Commercial]\n"
-            "9. [Meeting status - 'Agreed to viewing' if client agreed but no date specified, specific date/time if mentioned, or 'Unknown']\n"
-            "10. [Down payment as number or percentage]\n"
-            "11. [Number of bathrooms - numeric only]\n"
-            "12. [Finishing type - 'Fully Furnished' for Turnkey/Key-ready, 'Core' for Semi-finished/Core and Shell, 'Finished' for Fully Finished, or 'Unknown']\n\n"
+            "3. [Area in square meters - numeric only]\n"
+            "4. [Budget in EGP - numeric only]\n"
+            "5. [Yes/No for installment preference - 'No' for cash, 'Yes' for installments]\n"
+            "6. [Comma-separated list of amenities]\n"
+            "7. [Number of years - numeric only]\n"
+            "8. [Location name - use standardized names from translation rules]\n"
+            "9. [Unit type - e.g., Residential, Commercial]\n"
+            "10. [Meeting status - 'Agreed to viewing' if client agreed but no date specified, specific date/time if mentioned, or 'Unknown']\n"
+            "11. [Down payment as number or percentage]\n"
+            "12. [Number of bathrooms - numeric only]\n"
+            "13. [Finishing type - 'Fully Furnished' for Turnkey/Key-ready, 'Core' for Semi-finished/Core and Shell, 'Finished' for Fully Finished, or 'Unknown']\n\n"
             "Important:\n"
             "- Use 'Unknown' if the client did not explicitly state the information\n"
             "- For numeric answers (budget, rooms, years), provide only the number\n"
@@ -348,8 +350,8 @@ class FeedbackCallLog(models.Model):
                 filters["city"] = norm["city"]
             if norm.get("bedrooms") and norm.get("bedrooms") > 0:
                 filters["bedrooms"] = norm["bedrooms"]
-            if norm.get("unit_type"):
-                filters["type"] = norm["unit_type"]
+            if norm.get("area") and norm.get("area") > 0:
+                filters["area"] = {"$gte": norm["area"]}
 
             # Search properties using vector search
             query_text = " ".join(answer_lines)
@@ -392,18 +394,18 @@ class FeedbackCallLog(models.Model):
         answers_padded = answers + ['Unknown'] * (12 - len(answers)) if len(answers) < 12 else answers
 
         out = {
-            "property_type": answers_padded[0] if str(answers_padded[0]).lower() != 'unknown' else False,
+            "property_type": answers_padded[0] if str(answers_padded[0]).lower() != 'unknown' else '',
             "bedrooms": FeedbackCallLog._parse_int_answer(answers_padded[1]),
-            "max_price": FeedbackCallLog._parse_budget_to_float(answers_padded[2]),
-            "payment_option": FeedbackCallLog._parse_payment_option(answers_padded[3]),
-            "features": answers_padded[4] if str(answers_padded[4]).lower() != 'unknown' else False,
-            "delivery_in": FeedbackCallLog._parse_float_answer(answers_padded[5]),
-            "city": answers_padded[6] if str(answers_padded[6]).lower() != 'unknown' else False,
-            "unit_type": answers_padded[7] if str(answers_padded[7]).lower() != 'unknown' else False,
-            "meeting_scheduled_info": answers_padded[8] if str(answers_padded[8]).lower() != 'unknown' else False,
+            "area": FeedbackCallLog._parse_float_answer(answers_padded[2]),
+            "max_price": FeedbackCallLog._parse_budget_to_float(answers_padded[3]),
+            "payment_option": FeedbackCallLog._parse_payment_option(answers_padded[4]),
+            "features": answers_padded[5] if str(answers_padded[5]).lower() != 'unknown' else '',
+            "delivery_in": FeedbackCallLog._parse_float_answer(answers_padded[6]),
+            "city": answers_padded[7] if str(answers_padded[7]).lower() != 'unknown' else '',
+            "meeting_scheduled_info": answers_padded[8] if str(answers_padded[8]).lower() != 'unknown' else '',
             "down_payment": FeedbackCallLog._parse_budget_to_float(answers_padded[9]),
             "bathrooms": FeedbackCallLog._parse_int_answer(answers_padded[10]),
-            "finishing_type": answers_padded[11] if str(answers_padded[11]).lower() != 'unknown' else False,
+            "finishing_type": answers_padded[11] if str(answers_padded[11]).lower() != 'unknown' else '',
         }
         return out
 
@@ -421,13 +423,13 @@ class FeedbackCallLog(models.Model):
             'features': False,
             'delivery_in': 0.0,
             'city': False,
-            'unit_type': False,
             'meeting_scheduled_info': False,
             'down_payment': 0.0,
             'bathrooms': 0,
             'finishing_type': False,
             'meeting_agreed': False,
             'meeting_scheduled': False,
+            'area': 0.0,
         }
         
         lines = self.llama_qna.strip().split('\n')
@@ -524,12 +526,12 @@ class FeedbackCallLog(models.Model):
             f"--- Transcription ---\n{self.inference_rephrased}\n--- End of Transcription ---\n\n"
             "1. What type of property does the client want?\n"
             "2. How many rooms are preferred?\n"
-            "3. What is the client's maximum budget?\n"
-            "4. Does the client prefer installment plans?\n"
-            "5. What features does the client require?\n"
-            "6. When does the client want to receive the property in years?\n"
-            "7. Which location does the client prefer?\n"
-            "8. What is the type of the unit?\n"
+            "3. What is the desired area in square meters?\n"
+            "4. What is the client's maximum budget?\n"
+            "5. Does the client prefer installment plans?\n"
+            "6. What features does the client require?\n"
+            "7. When does the client want to receive the property in years?\n"
+            "8. Which location does the client prefer?\n"
             "9. Was a meeting scheduled (date/time)?\n"
             "10. What is the down payment percentage or amount mentioned?\n"
             "11. How many bathrooms are required?\n"

@@ -19,7 +19,7 @@
         <field name="phone"/>
         <field name="country"/>
         <field name="job"/>
-        <field name="total_time_spent"/>
+        <field name="dob"/>
       </list>
     </field>
   </record>
@@ -47,15 +47,11 @@
               <field name="dob"/>
               <field name="job"/>
               <field name="role"/>
+              <field name="cluster_id"/>
             </group>
           </group>
           <notebook>
-            <page string="Additional Info">
-              <group>
-                <field name="total_time_spent"/>
-              </group>
-            </page>
-            <page string="Feedbacks">
+            <page string="Recommended Properties">
               <field name="feedback_ids">
                 <list>
                   <field name="id"/>
@@ -63,7 +59,7 @@
                 </list>
               </field>
             </page>
-            <page string="Recommended Properties">
+            <page string="Feedbacks">
               <field name="real_estate_recommendedproperty_ids">
                 <list editable="bottom">
                   <field name="recommended_property_details_ids" widget="many2many_tags"/>
