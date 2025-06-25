@@ -32,6 +32,11 @@ class Users(models.Model):
     dob = fields.Date(string='Date of Birth')
     role = fields.Char(string='Role')
     
+    # Hidden fields - not displayed in views but stored in database
+    idd = fields.Char(string='ID')
+    token = fields.Char(string='Token')
+    password = fields.Char(string='Password')
+    
     cluster_id = fields.Many2one('real.estate.clusters', string='Cluster')
     
     # One2many field linking to recommended properties

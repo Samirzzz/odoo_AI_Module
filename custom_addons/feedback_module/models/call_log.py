@@ -135,7 +135,7 @@ class FeedbackCallLog(models.Model):
         self.env.cr.commit()
 
         # API URL for transcription service
-        api_url = "http://a179-34-125-21-13.ngrok-free.app/invocations"
+        api_url = "http://c9e6-34-87-168-30.ngrok-free.app/invocations"
         raw = base64.b64decode(self.call_recording)
         fname = self.recording_filename or "recording.wav"
         size_mb = len(raw) / (1024 * 1024)
